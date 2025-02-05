@@ -6,7 +6,7 @@
 <div class="card">
 
 
-    <form class="row g-3 cadastro" method="POST" action="{{ route('fornecedores.update')}}" novalidate>
+    <form class="row g-3 cadastro" method="POST" action="{{ route('fornecedores.update', $fornecedor->id) }}" novalidate>
         @csrf
 
         <div class="pagetitle">
@@ -130,7 +130,7 @@
         </div>
 
         <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="bairro"><strong>Bairro</strong></label>
                 <input type="text" name="bairro" class="form-control @error('bairro') is-invalid @enderror" value="{{ old('bairro', $fornecedor->bairro) }}">
                 @error('bairro')
@@ -138,18 +138,24 @@
                 @enderror
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
+                <label for="estado_id"><strong>Estado</strong></label>
+                <select name="estado_id" class="form-select">
+                    @foreach ($estados as $estado)
+                    <option value="{{ $estado->id }}" {{ old('estado_id', $estado->estado_id) == $estado->id ? 'selected' : '' }}>{{ $estado->nome }}</option>
+                @endforeach
+                </select>
+                @error('cidade_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="col-md-4">
                 <label for="cidade_id"><strong>Cidade</strong></label>
                 <select name="cidade_id" class="form-select">
-                    @foreach ($estados as $estado)
-                        <optgroup label="{{ $estado->nome }}">
-                            @foreach ($estado->cidades as $cidade)
-                                <option value="{{ $cidade->id }}" {{ $fornecedor->cidade_id == $cidade->id ? 'selected' : '' }}>
-                                    {{ $cidade->nome }}
-                                </option>
-                            @endforeach
-                        </optgroup>
-                    @endforeach
+                    @foreach ($cidades as $cidade)
+                    <option value="{{ $cidade->id }}" {{ old('cidade_id', $cidade->estado_id) == $estado->id ? 'selected' : '' }}>{{ $cidade->nome }}</option>
+                @endforeach
                 </select>
                 @error('cidade_id')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -157,13 +163,101 @@
             </div>
 
         </div>
-
-
-
-
     </form>
-
-
 </div>
+
+
+
+
+{{-- CPF ou CNPJ --}}
+<script>
+    function toggleFields() {
+        var tipo = document.getElementById("tipo").value;
+        var juridicaFields = document.getElementById("juridicaFields");
+        var nomeLabel = document.getElementById("nomeLabel");
+
+        // Exibe ou oculta os campos de Pessoa Jurídica com base no tipo selecionado
+        if (tipo == "J") {
+            juridicaFields.style.display = "block";
+            nomeLabel.innerHTML = "Razão Social";  // Altera o nome do label para Razão Social
+        } else {
+            juridicaFields.style.display = "none";
+            nomeLabel.innerHTML = "Nome";  // Altera o nome do label para Nome
+        }
+    }
+
+    // Executa a função inicialmente para garantir que os campos estejam visíveis ou ocultos ao carregar a página
+    document.addEventListener("DOMContentLoaded", function() {
+        toggleFields(); // Chama a função para garantir que a exibição esteja correta
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const estadoSelect = document.querySelector('[name="estado_id"]');
+    const cidadeSelect = document.querySelector('[name="cidade_id"]');
+
+    estadoSelect.addEventListener('change', function () {
+        const estadoId = estadoSelect.value;
+        console.log('Estado selecionado: ' + estadoId); // Verificar se o ID do estado está correto
+
+        cidadeSelect.innerHTML = '<option value="">Selecione a cidade...</option>';
+
+        if (estadoId) {
+            fetch(`/cidades/${estadoId}`)
+                .then(response => response.json())
+                .then(cidades => {
+                    console.log(cidades); // Verificar o retorno das cidades
+                    cidades.forEach(cidade => {
+                        const option = document.createElement('option');
+                        option.value = cidade.id;
+                        option.textContent = cidade.nome;
+                        cidadeSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar as cidades:', error);
+                });
+        }
+    });
+    });
+
+</script>
+
+{{-- CEP --}}
+<script>
+    $(document).ready(function() {
+    // Função para aplicar a máscara no campo CEP
+    $('#cep').on('input', function() {
+        var cep = $(this).val().replace(/\D/g, ''); // Remove tudo que não for número
+        if (cep.length === 8) { // Verifica se o CEP tem 8 caracteres
+            // Realiza a consulta via AJAX na API do ViaCEP
+            $.ajax({
+                url: `https://viacep.com.br/ws/${cep}/json/`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.erro) {
+                        // Caso o CEP não seja encontrado, avisa o usuário
+                        alert('CEP não encontrado');
+                    } else {
+                        // Preenche os campos do formulário com os dados retornados
+                        $('#logradouro').val(data.logradouro);
+                        $('#bairro').val(data.bairro);
+                        $('#cidade_id').val(data.localidade);  // Corrigido: use o ID correto do campo cidade
+                        $('#estado').val(data.uf);  // Corrigido: use o ID correto do campo estado
+                    }
+                },
+                error: function() {
+                    alert('Erro ao consultar o CEP');
+                }
+            });
+        }
+    });
+});
+
+</script>
+
 
 @endsection

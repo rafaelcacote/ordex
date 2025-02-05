@@ -14,19 +14,17 @@ class Cidade extends Model
     protected $fillable = [
         'nome',
         'est_sgl',
-        'estados_id',
+        'estado_id',
     ];
 
     public function estado()
     {
-        return $this->belongsTo(Estado::class, 'estados_id');
+        return $this->belongsTo(Estado::class, 'estado_id');
     }
 
 
     public function fornecedores()
     {
-        return $this->hasMany(Fornecedor::class, 'cidades_id');
+        return $this->hasMany(Fornecedor::class, 'cidade_id');
     }
-
-
 }

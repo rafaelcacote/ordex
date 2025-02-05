@@ -84,7 +84,8 @@ class FornecedorController extends Controller
     {
         $fornecedor = Fornecedor::findOrFail($id);
         $estados = Estado::all();
-        return view('fornecedores.edit', compact('fornecedor', 'estados'));
+        $cidades = Cidade::all();
+        return view('fornecedores.edit', compact('fornecedor', 'estados', 'cidades'));
     }
 
     // Atualizar fornecedor

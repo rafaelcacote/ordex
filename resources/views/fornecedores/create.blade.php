@@ -140,13 +140,16 @@
             </div>
 
             <div class="col-md-3">
-                <label for="estado"><strong>Estado</strong></label>
-                <select name="estado" class="form-select">
-    <option value="">Selecione um estado...</option>
-    @foreach ($estados as $estado)
-        <option value="{{ $estado->estado_id }}" {{ old('estado') == $estado->estado_id ? 'selected' : '' }}>{{ $estado->nome }}</option>
-    @endforeach
-</select>
+                <label for="estado_id"><strong>Estado</strong></label>
+                <select name="estado_id" class="form-select">
+                <option value="">Selecione o estado...</option>
+                    @foreach ($estados as $estado)
+                    <option value="{{ $estado->id }}" {{ old('estado_id', $estado->estado_id) == $estado->id ? 'selected' : '' }}>{{ $estado->nome }}</option>
+                @endforeach
+                </select>
+                @error('cidade_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
 
@@ -197,9 +200,9 @@
     });
 </script>
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     const estadoSelect = document.querySelector('[name="estado"]');
     const cidadeSelect = document.querySelector('[name="cidade_id"]');
 
@@ -234,34 +237,35 @@
 {{-- CEP --}}
 <script>
     $(document).ready(function() {
-        // Função para aplicar a máscara no campo CEP
-        $('#cep').on('input', function() {
-            var cep = $(this).val().replace(/\D/g, ''); // Remove tudo que não for número
-            if (cep.length === 8) { // Verifica se o CEP tem 8 caracteres
-                // Realiza a consulta via AJAX na API do ViaCEP
-                $.ajax({
-                    url: `https://viacep.com.br/ws/${cep}/json/`,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(data) {
-                        if (data.erro) {
-                            // Caso o CEP não seja encontrado, avisa o usuário
-                            alert('CEP não encontrado');
-                        } else {
-                            // Preenche os campos do formulário com os dados retornados
-                            $('#logradouro').val(data.logradouro);
-                            $('#bairro').val(data.bairro);
-                            $('#cidade').val(data.localidade);
-                            $('#estado').val(data.uf);
-                        }
-                    },
-                    error: function() {
-                        alert('Erro ao consultar o CEP');
+    // Função para aplicar a máscara no campo CEP
+    $('#cep').on('input', function() {
+        var cep = $(this).val().replace(/\D/g, ''); // Remove tudo que não for número
+        if (cep.length === 8) { // Verifica se o CEP tem 8 caracteres
+            // Realiza a consulta via AJAX na API do ViaCEP
+            $.ajax({
+                url: `https://viacep.com.br/ws/${cep}/json/`,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.erro) {
+                        // Caso o CEP não seja encontrado, avisa o usuário
+                        alert('CEP não encontrado');
+                    } else {
+                        // Preenche os campos do formulário com os dados retornados
+                        $('#logradouro').val(data.logradouro);
+                        $('#bairro').val(data.bairro);
+                        $('#cidade_id').val(data.localidade);  // Corrigido: use o ID correto do campo cidade
+                        $('#estado').val(data.uf);  // Corrigido: use o ID correto do campo estado
                     }
-                });
-            }
-        });
+                },
+                error: function() {
+                    alert('Erro ao consultar o CEP');
+                }
+            });
+        }
     });
+});
+
 </script>
 
 
