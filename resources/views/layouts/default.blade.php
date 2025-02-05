@@ -148,50 +148,64 @@
         });
     </script>
 
-<script>
-    $(document).ready(function() {
-      // Máscara para telefone (com DDD)
-      $('.telefone').inputmask('(99) 9999-9999[9]'); // O [9] é opcional para o nono dígito
+    <script>
+        $(document).ready(function() {
+            // Máscara para telefone (com DDD)
+            $('.telefone').inputmask('(99) 9999-9999[9]'); // O [9] é opcional para o nono dígito
 
-      // Máscara para CPF
-      $('#cpf').inputmask('999.999.999-99');
+            // Máscara para CPF
+            $('#cpf').inputmask('999.999.999-99');
 
-      // Máscara para CNPJ
-      $('#cnpj').inputmask('99.999.999/9999-99');
-    });
-  </script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Selecionar todos os campos de formulário
-        const formFields = document.querySelectorAll('input, textarea, select');
-
-        // Adicionar um evento keydown para cada campo
-        formFields.forEach(function (field) {
-            field.addEventListener('keydown', function (event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // Impede o envio do formulário
-
-                    // Verifica o índice do campo atual
-                    let nextField = getNextField(field);
-
-                    // Se houver um próximo campo, passa o foco para ele
-                    if (nextField) {
-                        nextField.focus();
-                    }
-                }
-            });
+            // Máscara para CNPJ
+            $('#cnpj').inputmask('99.999.999/9999-99');
         });
+    </script>
 
-        function getNextField(currentField) {
-            let next = currentField.nextElementSibling;
-            while (next && next.tagName !== 'INPUT' && next.tagName !== 'TEXTAREA' && next.tagName !== 'SELECT') {
-                next = next.nextElementSibling;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Selecionar todos os campos de formulário
+            const formFields = document.querySelectorAll('input, textarea, select');
+
+            // Adicionar um evento keydown para cada campo
+            formFields.forEach(function(field) {
+                field.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault(); // Impede o envio do formulário
+
+                        // Verifica se o campo está em um formulário com a classe 'pesquisar' para permitir o envio
+                        if (shouldSubmitForm(field)) {
+                            const form = field.closest('form');
+                            if (form) {
+                                form.submit(); // Envia o formulário
+                            }
+                        } else {
+                            // Caso contrário, move o foco para o próximo campo
+                            let nextField = getNextField(field);
+                            if (nextField) {
+                                nextField.focus();
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Função para decidir quando o formulário deve ser enviado
+            function shouldSubmitForm(field) {
+                // Verifica se o formulário possui a classe 'pesquisar'
+                return field.closest('form') && field.closest('form').classList.contains('pesquisar');
             }
-            return next;
-        }
-    });
-</script>
+
+            // Função para encontrar o próximo campo de formulário
+            function getNextField(currentField) {
+                let next = currentField.nextElementSibling;
+                while (next && next.tagName !== 'INPUT' && next.tagName !== 'TEXTAREA' && next.tagName !==
+                    'SELECT') {
+                    next = next.nextElementSibling;
+                }
+                return next;
+            }
+        });
+    </script>
 
 
 

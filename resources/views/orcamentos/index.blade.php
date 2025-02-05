@@ -26,6 +26,10 @@
 
                 <form class="row g-3 pesquisa" method="GET" action="{{ route('orcamentos.index') }}">
                     @csrf
+                    <div class="col-md-2">
+                        <label for="id" class="form-label"><span class="badge bg-dark">Código</span></label>
+                        <input type="text" class="form-control" id="id" name="id" value="">
+                    </div>
                     <div class="col-md-4">
                         <label for="for_nome" class="form-label"><span class="badge bg-dark">Nome</span></label>
                         <input type="text" class="form-control" id="for_nome" name="for_nome" value="">
@@ -54,43 +58,47 @@
                         </thead>
                         <tbody>
                             @foreach ($orcamentos as $orcamento)
-                            <tr>
-                                <td><strong>{{ $orcamento->id }}</strong></td>
-                                <td>{{ $orcamento->fornecedor->nome }}</td>
-                                <td>{{ $orcamento->prazo_formatado }}</td>
-                                <td>{{ $orcamento->total_orcamento_formatado }}</td>
-                                <td>
-                                    <!-- Exibir o status com a badge -->
-                                    @if($orcamento->status == 'Aberto')
-                                        <span class="badge bg-success">Aberto</span>
-                                    @elseif($orcamento->status == 'Enviado')
-                                        <span class="badge bg-info">Enviado</span>
-                                    @elseif($orcamento->status == 'Respondido')
-                                        <span class="badge bg-warning">Respondido</span>
-                                    @elseif($orcamento->status == 'Finalizado')
-                                        <span class="badge bg-secondary">Finalizado</span>
-                                    @else
-                                        <span class="badge bg-light">Indefinido</span>
-                                    @endif
-                                </td>
+                                <tr>
+                                    <td><strong>{{ $orcamento->id }}</strong></td>
+                                    <td>{{ $orcamento->fornecedor->nome }}</td>
+                                    <td>{{ $orcamento->prazo_formatado }}</td>
+                                    <td>{{ $orcamento->total_orcamento_formatado }}</td>
+                                    <td>
+                                        <!-- Exibir o status com a badge -->
+                                        @if ($orcamento->status == 'Aberto')
+                                            <span class="badge bg-success">Aberto</span>
+                                        @elseif($orcamento->status == 'Enviado')
+                                            <span class="badge bg-info">Enviado</span>
+                                        @elseif($orcamento->status == 'Respondido')
+                                            <span class="badge bg-warning">Respondido</span>
+                                        @elseif($orcamento->status == 'Finalizado')
+                                            <span class="badge bg-secondary">Finalizado</span>
+                                        @else
+                                            <span class="badge bg-light">Indefinido</span>
+                                        @endif
+                                    </td>
 
-                                <td align="center">
-                                    <a href="{{ route('orcamentos.edit', $orcamento->id) }}" class="btn btn-sm btn-primary">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a href="{{ route('orcamento.pdf', $orcamento->id) }}" class="btn btn-sm btn-primary" target="_blank">
-                                        <i class="bi bi-printer"></i>
-                                    </a>
-                                    <form action="{{ route('orcamentos.destroy', $orcamento->id) }}" method="POST" style="display: inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete(event, this.form, '{{ $orcamento->nome }}')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
+                                    <td align="center">
+                                        <a href="{{ route('orcamentos.edit', $orcamento->id) }}"
+                                            class="btn btn-sm btn-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a href="{{ route('orcamento.pdf', $orcamento->id) }}"
+                                            class="btn btn-sm btn-primary" target="_blank">
+                                            <i class="bi bi-printer"></i>
+                                        </a>
+                                        <form action="{{ route('orcamentos.destroy', $orcamento->id) }}" method="POST"
+                                            style="display: inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                onclick="confirmDelete(event, this.form, '{{ $orcamento->nome }}')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
 
                         </tbody>
                     </table>
@@ -117,7 +125,8 @@
             event.preventDefault(); // Impede o envio imediato do formulário
 
             // Define a mensagem no modal
-            document.getElementById('modalBody').innerHTML = `Tem certeza que deseja deletar o orçamento <strong>${nome}</strong>?`;
+            document.getElementById('modalBody').innerHTML =
+                `Tem certeza que deseja deletar o orçamento <strong>${nome}</strong>?`;
 
             // Exibe o modal
             var confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
@@ -128,5 +137,5 @@
                 form.submit();
             };
         }
-        </script>
+    </script>
 @endsection

@@ -1326,20 +1326,17 @@ h6 {
     background-color: #d1e7fd !important; /* Cor de fundo para linha selecionada */
 }
 
-
-
 /* Ajustando a largura da tabela de sugestão */
 #produto-table-container {
-    width: 55%;  /* Agora a tabela ocupa a largura total do campo de entrada */
-    max-height: none;  /* Remover a altura máxima para não restringir */
-    overflow: hidden;  /* Remove a barra de rolagem */
-    background: #fff;
-    border: 1px solid #ccc;
-    z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave em volta da tabela */
-    border-radius: 5px; /* Bordas arredondadas */
-    display: none;  /* Mantém a tabela oculta até que o termo de pesquisa seja suficiente */
-    margin-top: 2px;  /* Pequeno espaço entre o campo e a tabela */
+    width: 55%; /* Altera para 100% para ocupar a largura disponível do contêiner */
+    max-height: 300px; /* Altura máxima para rolagem */
+    z-index: 1000; /* Garante que a tabela fique acima de outros elementos */
+    display: none; /* Mantém a tabela oculta até que o termo de pesquisa seja suficiente */
+    margin-top: 10px;  /* Adiciona um espaçamento entre o campo nome_produto e a tabela */
+    position: absolute; /* Posiciona a tabela de forma absoluta em relação ao contêiner */
+    background-color: white; /* Garante que a tabela tenha fundo branco */
+    border: 1px solid #ddd; /* Borda ao redor da tabela */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombras para a tabela se destacar */
 }
 
 /* Ajustando as células e o cabeçalho */
@@ -1370,6 +1367,8 @@ h6 {
 #produto-table-container .table-active {
     background-color: #d1e7fd !important; /* Cor de fundo para linha selecionada */
 }
+
+
 
 /* Estilo para o erro */
 #produto-error {

@@ -53,6 +53,8 @@ class PedidoController extends Controller
         // Limpar espaços extras no backend antes de salvar
         $totalItens = trim($request->total_itens);
 
+
+
         // Iniciar uma transação para garantir que todas as operações sejam feitas corretamente
         DB::beginTransaction();
 
