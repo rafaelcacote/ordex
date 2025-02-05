@@ -30,7 +30,7 @@ class OrcamentoController extends Controller
         }
 
         // Executa a query e obtém os resultados
-        $orcamentos = $query->get();
+        $orcamentos = $query->paginate(10);
 
         // Retorna a view com os orçamentos
         return view('orcamentos.index', compact('orcamentos'));

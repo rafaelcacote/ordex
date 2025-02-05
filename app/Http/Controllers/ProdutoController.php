@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Produto;
 use App\Models\Categoria;
+use App\Http\Requests\Produtos\StoreProdutoRequest;
+use App\Http\Requests\Produtos\UpdateProdutoRequest;
 use Illuminate\Http\Request;
 
 class ProdutoController extends Controller
@@ -11,43 +13,42 @@ class ProdutoController extends Controller
     // Exibe a lista de produtos ativos (status = 1)
     public function index(Request $request)
     {
-        $produtos = Produto::where('status', 1);
+        $categorias = Categoria::where('status', 1)->get();
+        $query = Produto::where('status', 1);
 
         // Filtros condicionais
         if ($request->input('codigo')) {
-            $produtos->where('codigo', $request->input('codigo'));
+            $query->where('codigo', $request->input('codigo'));
         }
 
         if ($request->input('nome')) {
-            $produtos->where('nome', 'like', '%' . $request->input('nome') . '%');
+            $query->where('nome', 'like', '%' . $request->input('nome') . '%');
         }
 
         if ($request->input('tipo')) {
-            $produtos->where('tipo', $request->input('tipo'));
+            $query->where('tipo', $request->input('tipo'));
         }
 
-        $produtos = $produtos->get();
+        if ($request->input('categoria_id')) {
+            $query->where('categoria_id', $request->input('categoria_id'));
+        }
 
-        return view('produtos.index', compact('produtos'));
+        $produtos = $query->paginate(10);
+
+        return view('produtos.index', compact('produtos', 'categorias'));
     }
 
 
     // Exibe o formulário de criação
     public function create()
     {
-        $categorias = Categoria::all();
+        $categorias = Categoria::where('status', 1)->get();
         return view('produtos.create', compact('categorias'));
     }
 
     // Salva um novo produto
-    public function store(Request $request)
+    public function store(StoreProdutoRequest $request)
     {
-        $request->validate([
-            'codigo' => 'required|string|max:255',
-            'nome' => 'required|string|max:255',
-            'tipo' => 'required|string|max:255',
-            'categoria_id' => 'required|exists:categorias,id',
-        ]);
 
         Produto::create([
             'codigo' => $request->codigo,
@@ -71,14 +72,8 @@ class ProdutoController extends Controller
     }
 
     // Atualiza um produto existente
-    public function update(Request $request, $id)
+    public function update(UpdateProdutoRequest $request, $id)
     {
-        $request->validate([
-            'codigo' => 'required|string|max:255',
-            'nome' => 'required|string|max:255',
-            'tipo' => 'required|string|max:255',
-            'categoria_id' => 'required|exists:categorias,id',
-        ]);
 
         $produto = Produto::findOrFail($id);
         $produto->update([
@@ -99,7 +94,7 @@ class ProdutoController extends Controller
         $produto = Produto::findOrFail($id);
         $produto->update(['status' => 0]);
 
-        return redirect()->route('produtos.index')->with('success', 'Produto desativado com sucesso!');
+        return redirect()->route('produtos.index')->with('success', 'Produto excluido com sucesso!');
     }
 
     // Buscar produto por código

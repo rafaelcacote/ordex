@@ -12,21 +12,17 @@ class FornecedorController extends Controller
     // Listar fornecedores
     public function index(Request $request)
     {
-        $fornecedores = Fornecedor::where('status', 1);
+        $query = Fornecedor::where('status', 1);
 
         if ($request->has('nome')) {
-            $fornecedores->where('nome', 'like', '%' . $request->input('nome') . '%');
+            $query->where('nome', 'like', '%' . $request->input('nome') . '%');
         }
 
         if ($request->has('cpf_cnpj')) {
-            $fornecedores->where('cpf_cnpj', 'like', '%' . $request->input('cpf_cnpj') . '%');
+            $query->where('cpf_cnpj', 'like', '%' . $request->input('cpf_cnpj') . '%');
         }
 
-        if ($request->has('telefone')) {
-            $fornecedores->where('telefone1', 'like', '%' . $request->input('telefone') . '%');
-        }
-
-        $fornecedores = $fornecedores->get();
+        $fornecedores = $query->paginate(10);
 
         return view('fornecedores.index', compact('fornecedores'));
     }
@@ -35,6 +31,8 @@ class FornecedorController extends Controller
     public function create()
     {
         $estados = Estado::all();
+
+
         return view('fornecedores.create', compact('estados'));
     }
 
@@ -121,5 +119,19 @@ class FornecedorController extends Controller
         $fornecedor->update(['status' => 0]);
 
         return redirect()->route('fornecedores.index')->with('success', 'Fornecedor desativado com sucesso!');
+    }
+
+    public function getCidades($estado_id)
+    {
+        // Verifica se o estado existe
+        $cidades = Cidade::where('estado_id', $estado_id)->get();
+
+        // Verifica se foram encontradas cidades
+        if ($cidades->isEmpty()) {
+            return response()->json(['message' => 'Nenhuma cidade encontrada para este estado'], 404);
+        }
+
+        // Retorna as cidades no formato JSON
+        return response()->json($cidades);
     }
 }

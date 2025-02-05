@@ -24,24 +24,23 @@
 
 
         <div class="card">
-           
-            <form class="row g-3 pesquisa" method="GET" action="{{ route ('fornecedores') }}">
-              @csrf
+
+            <form class="row g-3 pesquisa" method="GET" action="{{ route ('fornecedores.index') }}">
               <div class="col-md-4">
-                <label for="for_nome" class="form-label"><span class="badge bg-dark">Nome</span></label>
-                <input type="text" class="form-control" id="for_nome" name="for_nome" value="">
+                <label for="nome" class="form-label"><span class="badge bg-dark">Nome</span></label>
+                <input type="text" class="form-control" id="nome" name="nome" value="">
               </div>
               <div class="col-md-4">
-                <label for="for_cpf_cnpj" class="form-label"><span class="badge bg-dark">CPF / CNPJ</span></label>
-                <input type="text" class="form-control" id="for_cpf_cnpj" name="for_cpf_cnpj" value=""> 
+                <label for="cpf_cnpj" class="form-label"><span class="badge bg-dark">CPF / CNPJ</span></label>
+                <input type="text" class="form-control" id="cpf_cnpj" name="cpf_cnpj" value="">
               </div>
               <div class="col-md-4 botao">
                 <button type="submit" class="btn btn-warning">Pesquisar</button>
-                <button type="button" class="btn btn-danger" onclick="window.location='{{ route('fornecedores') }}'"><i class="bi bi-backspace"></i></button>
+                <button type="button" class="btn btn-danger" onclick="window.location='{{ route('fornecedores.index') }}'"><i class="bi bi-backspace"></i></button>
               </div>
-              
+
             </form>
-        
+
         <!-- Table with stripped rows -->
         <div class="table-responsive" >
         <table class="table table-striped table-hover">
@@ -52,39 +51,47 @@
               <th scope="col">CPF / CNPJ</th>
               <th scope="col">Telefone</th>
               <th scope="col">Editar</th>
-              <th scope="col">Detalhes</th>
+              {{-- <th scope="col">Detalhes</th> --}}
               <th scope="col">Excluir</th>
             </tr>
           </thead>
           <tbody>
-            @foreach($fornecedores as $fornecedor) 
+            @foreach($fornecedores as $fornecedor)
             <tr data-id="{{ $fornecedor->for_codigo }}">
               <th scope="row">{{ $fornecedor->id }}</th>
               <td>{{ $fornecedor->nome }}</td>
               <td>{{ $fornecedor->cpf_cnpj }}</td>
-   
+
               <td>{{$fornecedor->telefone1}}</td>
               <td style="width: 60px;text-align: center">
                 <a href="{{ route('fornecedores.edit', $fornecedor->id) }}" type="button" class="btn btn-primary acao" role="button"><i class="bi bi-pencil-square"></i></a>
-              </td> 
+              </td>
+              {{-- <td style="width: 60px;text-align: center">
+              <a href="" type="button" class="btn btn-info acao"><i class="bi bi-plus-square"></i></a> --}}
               <td style="width: 60px;text-align: center">
-              <a href="" type="button" class="btn btn-info acao"><i class="bi bi-plus-square"></i></a>
-              <td style="width: 60px;text-align: center">
-                <a href="" type="button" class="btn btn-danger acao"><i class="bi bi-trash"></i></a>
-              </td> 
-                   
+                <form action="{{ route('fornecedores.destroy', $fornecedor->id) }}" method="POST"
+                    style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn btn-sm btn-danger"
+                        onclick="confirmDelete(event, this.form, '{{ $fornecedor->nome }}')">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </td>
+
             </tr>
             @endforeach
-            
+
           </tbody>
         </table>
         <!-- End Table with stripped rows -->
         </div>
-        
+
         {{-- <div class="d-flex pagination">
           {{$fornecedores->appends($request->input())->links() }}
         </div>     --}}
-        
+
     </div>
 
 

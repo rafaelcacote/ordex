@@ -8,6 +8,7 @@
     <title>Ordex - OMBOAT</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicons -->
     <link href="assets/img/favicon.png" rel="icon">
@@ -105,6 +106,10 @@
     <script src="{{ asset('assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('assets/vendor/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+    <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
+    <script src="{{ asset('assets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/jquery/inputmask.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/jquery/jquery.inputmask.min.js') }}"></script>
 
     <!-- Template Main JS File -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
@@ -142,6 +147,52 @@
             }
         });
     </script>
+
+<script>
+    $(document).ready(function() {
+      // Máscara para telefone (com DDD)
+      $('.telefone').inputmask('(99) 9999-9999[9]'); // O [9] é opcional para o nono dígito
+
+      // Máscara para CPF
+      $('#cpf').inputmask('999.999.999-99');
+
+      // Máscara para CNPJ
+      $('#cnpj').inputmask('99.999.999/9999-99');
+    });
+  </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Selecionar todos os campos de formulário
+        const formFields = document.querySelectorAll('input, textarea, select');
+
+        // Adicionar um evento keydown para cada campo
+        formFields.forEach(function (field) {
+            field.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Impede o envio do formulário
+
+                    // Verifica o índice do campo atual
+                    let nextField = getNextField(field);
+
+                    // Se houver um próximo campo, passa o foco para ele
+                    if (nextField) {
+                        nextField.focus();
+                    }
+                }
+            });
+        });
+
+        function getNextField(currentField) {
+            let next = currentField.nextElementSibling;
+            while (next && next.tagName !== 'INPUT' && next.tagName !== 'TEXTAREA' && next.tagName !== 'SELECT') {
+                next = next.nextElementSibling;
+            }
+            return next;
+        }
+    });
+</script>
+
 
 
 </body>

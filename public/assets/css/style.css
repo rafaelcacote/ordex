@@ -1278,3 +1278,145 @@ h6 {
   position: fixed;
   z-index: 100;
 }
+
+
+
+
+
+/*  AJUSTES PARA O ORCAMENTO E PEDIDO */
+
+/* Ajustando a largura da tabela de sugestão */
+#fornecedor-table-container {
+    width: 55%;  /* Aumentando a largura da tabela (ajuste conforme necessário) */
+    max-height: 400px;  /* Altura máxima */
+    overflow-y: auto;   /* Permitir rolagem vertical */
+    background: #fff;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave em volta da tabela */
+    border-radius: 5px; /* Bordas arredondadas */
+    margin: 0 auto;  /* Centraliza a tabela */
+}
+
+/* Ajustando as células e o cabeçalho */
+#fornecedor-table-container th, #fornecedor-table-container td {
+    padding: 12px;      /* Aumentando o padding */
+    font-size: 14px;    /* Tamanho da fonte */
+}
+
+/* Estilo do cabeçalho */
+#fornecedor-table-container th {
+    background-color: #007bff;  /* Cor do cabeçalho */
+    color: white;               /* Cor do texto */
+    text-align: left;
+}
+
+/* Estilo das linhas da tabela */
+#fornecedor-table-container td {
+    vertical-align: middle; /* Alinhamento vertical */
+}
+
+/* Destacar as linhas ao passar o mouse */
+#fornecedor-table-container tr:hover {
+    background-color: #f1f1f1;   /* Cor de fundo ao passar o mouse */
+}
+
+/* Linha selecionada ao usar as setas do teclado */
+#fornecedor-table-container .table-active {
+    background-color: #d1e7fd !important; /* Cor de fundo para linha selecionada */
+}
+
+
+
+/* Ajustando a largura da tabela de sugestão */
+#produto-table-container {
+    width: 55%;  /* Agora a tabela ocupa a largura total do campo de entrada */
+    max-height: none;  /* Remover a altura máxima para não restringir */
+    overflow: hidden;  /* Remove a barra de rolagem */
+    background: #fff;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave em volta da tabela */
+    border-radius: 5px; /* Bordas arredondadas */
+    display: none;  /* Mantém a tabela oculta até que o termo de pesquisa seja suficiente */
+    margin-top: 2px;  /* Pequeno espaço entre o campo e a tabela */
+}
+
+/* Ajustando as células e o cabeçalho */
+#produto-table-container th, #produto-table-container td {
+    padding: 6px 10px;  /* Diminui o padding, deixando as células mais finas */
+    font-size: 12px;    /* Reduz o tamanho da fonte para deixar as células mais compactas */
+    border: 1px solid #ddd;  /* Borda mais fina */
+}
+
+/* Estilo do cabeçalho */
+#produto-table-container th {
+    background-color: #007bff;  /* Cor do cabeçalho */
+    color: white;               /* Cor do texto */
+    text-align: left;
+}
+
+/* Estilo das linhas da tabela */
+#produto-table-container td {
+    vertical-align: middle; /* Alinhamento vertical */
+}
+
+/* Destacar as linhas ao passar o mouse */
+#produto-table-container tr:hover {
+    background-color: #f1f1f1;   /* Cor de fundo ao passar o mouse */
+}
+
+/* Linha selecionada ao usar as setas do teclado */
+#produto-table-container .table-active {
+    background-color: #d1e7fd !important; /* Cor de fundo para linha selecionada */
+}
+
+/* Estilo para o erro */
+#produto-error {
+    font-size: 0.700rem; /* Reduzir o tamanho da fonte */
+    padding: 0.3rem 1rem; /* Menor padding */
+    border-radius: 0.25rem; /* Borda mais arredondada */
+    height: auto; /* Ajusta a altura conforme o conteúdo */
+}
+
+
+#erro-item {
+    font-size: 0.700rem; /* Reduzir o tamanho da fonte */
+    padding: 0.3rem 1rem; /* Menor padding */
+    border-radius: 0.25rem; /* Borda mais arredondada */
+    height: auto; /* Ajusta a altura conforme o conteúdo */
+}
+
+#erro-quantidade {
+    font-size: 0.700rem; /* Reduzir o tamanho da fonte */
+    padding: 0.3rem 1rem; /* Menor padding */
+    border-radius: 0.25rem; /* Borda mais arredondada */
+    height: auto; /* Ajusta a altura conforme o conteúdo */
+}
+
+.foote-class {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem; /* mt-4 */
+    padding: 0.5rem; /* p-2 */
+    background-color: #fef9c3; /* bg-yellow-100 */
+    border-top: 1px solid #fde047; /* border-t border-yellow-300 */
+}
+
+
+
+
+
+.observacao-cell {
+    max-width: 200px; /* Defina o tamanho máximo que você deseja para a célula */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer; /* Indica que o texto pode ser interativo */
+}
+
+.observacao-cell:hover {
+    text-overflow: clip; /* Remove a elipse quando o mouse estiver sobre */
+    white-space: normal; /* Permite que o texto quebre linhas quando estiver em hover */
+}

@@ -16,18 +16,26 @@ class PedidoController extends Controller
     // Exibe a lista de pedidos
     public function index(Request $request)
     {
+
         $query = Pedido::query();
 
-        if ($request->has('id') && $request->input('id') != '') {
-            $query->where('id', $request->input('id'));
+        // Filtros condicionais
+        if ($request->input('codigo')) {
+            $query->where('id', $request->input('codigo'));
         }
 
+        // Aplica o filtro de fornecedor (nome), se fornecido
         if ($request->has('nome') && $request->input('nome') != '') {
+            // Faz o join com a tabela fornecedores e filtra pelo nome
             $query->join('fornecedores', 'pedidos.fornecedor_id', '=', 'fornecedores.id')
                 ->where('fornecedores.nome', 'like', '%' . $request->input('nome') . '%');
         }
 
-        $pedidos = $query->get();
+        if ($request->input('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        $pedidos = $query->paginate(10);
 
         return view('pedidos.index', compact('pedidos'));
     }
@@ -51,7 +59,7 @@ class PedidoController extends Controller
         try {
             // 1. Salvar dados na tabela orcamentos (aba Geral e Finalizar)
             $pedido = Pedido::create([
-                'user_id' => $request->user_id,
+                'user_id' => auth()->user()->id,
                 'fornecedor_id' => $request->fornecedor_id,
                 'total_itens' => $totalItens,
                 'total_pedido' => $request->total_pedido,

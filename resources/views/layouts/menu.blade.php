@@ -20,14 +20,14 @@
         </li><!-- End Profile Page Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" href="{{ route('produtos.index') }}">
                 <i class="bi bi-menu-button-wide"></i>
                 <span>Produtos</span>
             </a>
         </li><!-- End F.A.Q Page Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('fornecedores') }}">
+            <a class="nav-link collapsed" href="{{ route('fornecedores.index') }}">
                 <i class="bi bi-person"></i>
                 <span>Fornecedores</span>
             </a>
@@ -39,14 +39,14 @@
         <li class="nav-heading">Financeiro</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" href="{{ route('orcamentos.index') }}">
                 <i class="bi bi-card-checklist"></i>
                 <span>Cotações</span>
             </a>
         </li><!-- End Contact Page Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" href="{{ route('pedidos.index') }}">
                 <i class="bi bi-layout-text-window-reverse"></i>
                 <span>Pedidos</span>
             </a>
