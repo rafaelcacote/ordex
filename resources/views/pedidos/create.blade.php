@@ -33,6 +33,11 @@
 
                     </div>
                 @enderror
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <!-- -- Final do Titulo da Pagina -- -->
 
                 <!-- -- Campos do Formuário -- -->
@@ -926,7 +931,7 @@
                 .then(data => {
                     const routePedidos = @json(route('pedidos.index'));
                     if (data.success) {
-                        alert('Orçamento salvo com sucesso!');
+                        // alert('Orçamento salvo com sucesso!');
                         window.location.href = routePedidos;
                     } else {
                         showErrorModal('Erro ao salvar orçamento: ' + data.message);

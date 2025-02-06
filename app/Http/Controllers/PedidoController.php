@@ -52,9 +52,6 @@ class PedidoController extends Controller
     {
         // Limpar espaços extras no backend antes de salvar
         $totalItens = trim($request->total_itens);
-
-
-
         // Iniciar uma transação para garantir que todas as operações sejam feitas corretamente
         DB::beginTransaction();
 
@@ -72,8 +69,6 @@ class PedidoController extends Controller
                 'observacao' => $request->observacao,
             ]);
 
-
-
             // 2. Salvar itens na tabela itens_orcamentos
             foreach ($request->itens as $item) {
                 ItemPedido::create([
@@ -88,7 +83,6 @@ class PedidoController extends Controller
 
             // Se tudo deu certo, comita a transação
             DB::commit();
-
             return response()->json(['success' => true, 'message' => 'Pedido salvo com sucesso.']);
         } catch (\Exception $e) {
             // Se algum erro ocorrer, faz o rollback da transação

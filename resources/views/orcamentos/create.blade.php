@@ -145,6 +145,13 @@
                                                 <i class="bi bi-exclamation-triangle me-1"></i>
                                                 Produto não encontrado!
                                             </div>
+                                            <!-- Mensagem de erro para item não selecionado -->
+                                            <div class="alert alert-warning" id="erro-item"
+                                                style="display: none; margin-top: 10px;">
+                                                <i class="bi bi-exclamation-triangle me-1"></i> Nenhum Produto selecionado.
+                                                Por
+                                                favor, escolha um produto.
+                                            </div>
                                         </div>
                                     </div>
 
@@ -268,6 +275,7 @@
                     if (codigo) {
                         // Fazer requisição AJAX para buscar o fornecedor
                         fetch(`{{ route('buscar.fornecedor', '') }}/${codigo}`)
+
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
@@ -315,7 +323,6 @@
             const codigoInput = document.getElementById('codigo'); // Novo campo para código
             const fornecedorList = document.getElementById('fornecedor-list');
             const fornecedorTableContainer = document.getElementById('fornecedor-table-container');
-            const fornecedorError = document.getElementById('fornecedor-error');
             let currentIndex = -1; // Índice do item selecionado na tabela
 
             // Função para buscar fornecedores enquanto o usuário digita
@@ -362,20 +369,14 @@
                             } else {
                                 fornecedorTableContainer.style.display =
                                     'none'; // Se não houver resultados, esconde a tabela
-                                fornecedorError.style.display = 'block'; // Exibe a mensagem de erro
                             }
                         })
                         .catch(error => {
                             console.error('Erro ao buscar fornecedores:', error);
-                            fornecedorError.style.display = 'block';
                         });
                 } else {
                     fornecedorTableContainer.style.display =
                         'none'; // Esconde a tabela se o termo for menor que 3 caracteres
-                    setTimeout(function() {
-                        fornecedorError.style.display = 'none';
-                    }, 1000); // 3000 milissegundos = 3 segundos
-
                 }
             });
 
@@ -429,7 +430,7 @@
         });
     </script>
 
-    {{-- controla a inseção de itens --}}
+    {{-- rege os campos de inserir os itens --}}
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const idprodutoInput = document.getElementById('produto_id');
@@ -468,8 +469,6 @@
                 const rect = nomeprodutoInput
                     .getBoundingClientRect(); // Pega a posição do campo nome_produto
 
-
-
                 if (termo.length >= 3) {
                     fetch("{{ route('buscar.produto.nome') }}?nome=" + termo)
                         .then(response => response.json())
@@ -501,9 +500,8 @@
                                         codigoprodutoInput.value = produto.codigo;
                                         estoqueprodutoInput.value = produto.estoque;
                                         idprodutoInput.value = produto.id;
-
-
                                         produtoTableContainer.style.display = 'none';
+                                        currentIndex = -1;
                                     });
 
                                     produtoList.appendChild(tr);
@@ -551,6 +549,7 @@
 
 
                     produtoTableContainer.style.display = 'none';
+                    currentIndex = -1;
                 }
             });
 
@@ -564,6 +563,14 @@
                     }
                 });
             }
+
+            // Fechar a tabela de pesquisa ao pressionar ESC
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    produtoTableContainer.style.display = 'none';
+                    currentIndex = -1;
+                }
+            });
 
             // Função para pesquisar produto pelo código
             codigoprodutoInput.addEventListener('keyup', function(event) {
@@ -608,10 +615,12 @@
 
             // Adicionar item à lista de itens inseridos quando pressionar Enter no campo de quantidade
             quantidadeprodutoInput.addEventListener('keydown', function(event) {
+                console.log('Tecla pressionada:', event.key);
                 if (event.key === 'Enter') {
                     event.preventDefault(); // Evita o comportamento padrão de "Enter"
 
                     // Verifica se os campos necessários estão preenchidos
+                    const inputcodigo = document.getElementById('codigo_produto');
                     const codigo = codigoprodutoInput.value;
                     const nome = nomeprodutoInput.value;
                     const estoque = estoqueprodutoInput.value;
@@ -621,6 +630,10 @@
                     // Reseta as mensagens de erro
                     erroItem.style.display = 'none';
                     erroQuantidade.style.display = 'none';
+                    setTimeout(() => {
+                        inputcodigo.focus();
+                    }, 100); // Pequeno atraso para garantir que o foco seja aplicado corretamente
+
 
                     if (!codigo || !nome || !estoque) {
                         // Se algum dos campos estiver vazio, exibe a mensagem de erro de item não selecionado
@@ -669,7 +682,11 @@
                         document.getElementById('produto_id').value = '';
 
                         // Foca no campo Código após a adição
-                        codigoprodutoInput.focus();
+                        setTimeout(() => {
+                            inputcodigo.focus();
+                        }, 100); // Pequeno atraso para garantir que o foco seja aplicado corretamente
+
+
                     }
                 }
             });
@@ -710,9 +727,8 @@
     </script>
 
     {{-- funcao para salvar o orcamento e os itens --}}
-
     <script>
-        document.querySelector('.btn-primary').addEventListener('click', function(event) {
+        document.querySelector('.btn-success').addEventListener('click', function(event) {
             event.preventDefault(); // Impede o envio do formulário para validação
 
             const fornecedorId = document.getElementById('codigo').value;

@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\OrcamentoController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\UserController;
 
 
 // Rota inicial (home)
@@ -27,6 +28,16 @@ Route::middleware('auth')->group(function () {
 
     // Logout (apenas para usuários autenticados)
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Usuarios
+    Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
+    Route::get('/usuarios/adicionar', [UserController::class, 'create'])->name('usuarios.create');
+    Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
+    Route::get('/usuarios/{usuario}/editar', [UserController::class, 'edit'])->name('usuarios.edit');
+    Route::put('/usuarios/{usuario}', [UserController::class, 'update'])->name('usuarios.update');
+    //Route::get('/usuarios/pesquisar', [UserController::class, 'pesquisar'])->name('usuarios.pesquisar');
+    Route::get('/usuarios/{usuario}/detalhes', [UserController::class, 'detalhes'])->name('usuarios.detalhes');
+    Route::delete('/usuarios/{usuario}', [UserController::class, 'destroy'])->name('usuarios.destroy');
 
     // Fornecedores
     Route::get('/fornecedores', [FornecedorController::class, 'index'])->name('fornecedores.index');

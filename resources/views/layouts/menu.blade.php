@@ -62,17 +62,22 @@
         <li class="nav-heading">Configurações</li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
+            <a class="nav-link collapsed" href="{{ route('usuarios.index') }}">
                 <i class="bi bi-file-earmark-person"></i>
                 <span>Usuários</span>
             </a>
         </li><!-- End Contact Page Nav -->
 
+
         <li class="nav-item">
-            <a class="nav-link collapsed" href="#">
-                <i class="bi bi-arrow-return-left"></i>
-                <span>Sair</span>
-            </a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <a class="nav-link collapsed" href="logout"
+                    onclick="event.preventDefault(); this.closest('form').submit();">
+                    <i class="bi bi-arrow-return-left"></i>
+                    <span>Sair</span>
+                </a>
+            </form>
         </li><!-- End Register Page Nav -->
 
 

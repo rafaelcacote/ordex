@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\Usuarios\StoreUsuarioRequest;
+use App\Http\Requests\Usuarios\UpdateUsuarioRequest;
 
 class UserController extends Controller
 {
@@ -24,24 +27,19 @@ class UserController extends Controller
 
         $users = $query->where('status', 1)->paginate(10);
 
-        return view('users.index', compact('users'));
+        return view('usuarios.index', compact('users'));
     }
 
     // Exibir formulário de criação
     public function create()
     {
-        return view('users.create');
+        return view('usuarios.create');
     }
 
     // Salvar novo usuário
-    public function store(Request $request)
+    public function store(StoreUsuarioRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'username' => 'required|string|max:50|unique:users',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+
 
         User::create([
             'name' => $request->input('name'),
@@ -51,25 +49,19 @@ class UserController extends Controller
             'status' => 1,
         ]);
 
-        return redirect()->route('users.index')->with('success', 'Usuário criado com sucesso!');
+        return redirect()->route('usuarios.index')->with('success', 'Usuário criado com sucesso!');
     }
 
     // Exibir formulário de edição
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('users.edit', compact('user'));
+        return view('usuarios.edit', compact('user'));
     }
 
     // Atualizar usuário
-    public function update(Request $request, $id)
+    public function update(UpdateUsuarioRequest $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'username' => 'required|string|max:50|unique:users,username,' . $id,
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|string|min:8',
-        ]);
 
         $user = User::findOrFail($id);
         $user->update([
@@ -79,7 +71,7 @@ class UserController extends Controller
             'password' => $request->input('password') ? bcrypt($request->input('password')) : $user->password,
         ]);
 
-        return redirect()->route('users.index')->with('success', 'Usuário atualizado com sucesso!');
+        return redirect()->route('usuarios.index')->with('success', 'Usuário atualizado com sucesso!');
     }
 
     // Excluir (desativar) usuário
@@ -88,6 +80,6 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->update(['status' => 0]);
 
-        return redirect()->route('users.index')->with('success', 'Usuário excluido com sucesso!');
+        return redirect()->route('usuarios.index')->with('success', 'Usuário excluido com sucesso!');
     }
 }
