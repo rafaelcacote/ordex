@@ -6,6 +6,8 @@ use App\Models\Fornecedor;
 use App\Models\Cidade;
 use App\Models\Estado;
 use Illuminate\Http\Request;
+use App\Http\Requests\Fornecedores\StoreFornecedorRequest;
+use App\Http\Requests\Fornecedores\UpdateFornecedorRequest;
 
 class FornecedorController extends Controller
 {
@@ -37,24 +39,8 @@ class FornecedorController extends Controller
     }
 
     // Armazenar fornecedor
-    public function store(Request $request)
+    public function store(StoreFornecedorRequest $request)
     {
-        $request->validate([
-            'tipo' => 'required|in:F,J',
-            'cpf_cnpj' => 'required|string',
-            'nome' => 'required|string|max:255',
-            'ins_estadual' => 'nullable|string|max:20',
-            'ins_municipal' => 'nullable|string|max:20',
-            'telefone1' => 'required|string|max:15',
-            'telefone2' => 'nullable|string|max:15',
-            'logradouro' => 'required|string|max:255',
-            'numero' => 'nullable|string|max:10',
-            'bairro' => 'required|string|max:100',
-            'cep' => 'required|string|max:10',
-            'cidade_id' => 'required|exists:cidades,id',
-
-        ]);
-
         // Remove caracteres não numéricos do campo cpf_cnpj
         $request->merge([
             'cpf_cnpj' => preg_replace('/\D/', '', $request->cpf_cnpj),
@@ -89,23 +75,8 @@ class FornecedorController extends Controller
     }
 
     // Atualizar fornecedor
-    public function update(Request $request, $id)
+    public function update(UpdateFornecedorRequest $request, $id)
     {
-        $request->validate([
-            'tipo' => 'required|in:F,J',
-            'cpf_cnpj' => 'required|string|',
-            'nome' => 'required|string|max:255',
-            'ins_estadual' => 'nullable|string|max:20',
-            'ins_municipal' => 'nullable|string|max:20',
-            'telefone1' => 'required|string|max:15',
-            'telefone2' => 'nullable|string|max:15',
-            'logradouro' => 'required|string|max:255',
-            'numero' => 'required|string|max:10',
-            'bairro' => 'required|string|max:100',
-            'cep' => 'required|string|max:10',
-            'cidade_id' => 'required|exists:cidades,id',
-            'status' => 'required|in:0,1'
-        ]);
 
         $fornecedor = Fornecedor::findOrFail($id);
         $fornecedor->update($request->all());
@@ -120,6 +91,19 @@ class FornecedorController extends Controller
         $fornecedor->update(['status' => 0]);
 
         return redirect()->route('fornecedores.index')->with('success', 'Fornecedor desativado com sucesso!');
+    }
+
+    // EstadoController.php
+    public function getIdByUf($uf)
+    {
+        // Busca o estado pela sigla (UF)
+        $estado = Estado::where('sgl', $uf)->first();
+
+        if ($estado) {
+            return response()->json(['id' => $estado->id]);
+        }
+
+        return response()->json(['id' => null], 404);
     }
 
     public function getCidades($estado_id)

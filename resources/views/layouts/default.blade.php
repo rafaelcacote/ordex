@@ -149,9 +149,16 @@
     </script>
 
     <script>
-        $(document).ready(function() {
-            // Máscara para telefone (com DDD)
-            $('.telefone').inputmask('(99) 9999-9999[9]'); // O [9] é opcional para o nono dígito
+        $('#telefone').inputmask('(99) 99999-9999', {
+            greedy: false, // Permite que a máscara seja flexível
+            clearIncomplete: true, // Limpa o campo se a entrada estiver incompleta
+            placeholder: '_', // Define o caractere de placeholder
+            definitions: {
+                '9': { // Define o padrão para o dígito 9
+                    validator: '[0-9]', // Aceita apenas números
+                    cardinality: 1 // Cada "9" representa um único dígito
+                }
+            }
 
             // Máscara para CPF
             $('#cpf').inputmask('999.999.999-99');

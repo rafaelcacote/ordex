@@ -51,7 +51,8 @@
                         <div class="col-md-4">
                             <label for="cpf_cnpj"><strong>CPF/CNPJ</strong></label>
                             <input type="text" name="cpf_cnpj" id="cpf_cnpj"
-                                class="form-control @error('cpf_cnpj') is-invalid @enderror" value="{{ old('cpf_cnpj') }}">
+                                class="form-control  @error('cpf_cnpj') is-invalid @enderror" value="{{ old('cpf_cnpj') }}"
+                                autocomplete="off">
                             @error('cpf_cnpj')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -153,20 +154,22 @@
                         </div>
 
                         <div class="col-md-3">
-                            <label for="estado_id"><strong>Estado</strong></label>
-                            <select name="estado_id" id="estado_id" class="form-select">
-                                <option value="">Selecione o estado...</option>
-                                @foreach ($estados as $estado)
-                                    <option value="{{ $estado->uf }}"
-                                        {{ old('estado_id', $estado->estado_id) == $estado->uf ? 'selected' : '' }}>
-                                        {{ $estado->nome }}</option>
-                                @endforeach
-                            </select>
-                            @error('cidade_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <div class="form-group">
+                                <label for="estado"><strong>Estado</strong></label>
+                                <select name="estado_id" id="estado_id"
+                                    class="form-select me-2 rounded @error('estado_id') is-invalid @enderror ">
+                                    <option value="">Selecione um estado</option>
+                                    @foreach ($estados as $estado)
+                                        <option value="{{ $estado->id }}"
+                                            {{ old('estado_id') == $estado->id ? 'selected' : '' }}>{{ $estado->nome }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('estado_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
-
 
                         <div class="col-md-3">
                             <label for="cidade_id"><strong>Cidade</strong></label>
@@ -177,15 +180,8 @@
                         </div>
 
                     </div>
-
-
-
-
                 </form>
-
-
             </div>
-
         </div>
     </div>
 
@@ -198,20 +194,34 @@
             var tipo = document.getElementById("tipo").value;
             var juridicaFields = document.getElementById("juridicaFields");
             var nomeLabel = document.getElementById("nomeLabel");
+            var cpfCnpjInput = document.getElementById("cpf_cnpj");
 
             // Exibe ou oculta os campos de Pessoa Jurídica com base no tipo selecionado
             if (tipo == "J") {
                 juridicaFields.style.display = "block";
+                cpfCnpjInput.value = ""; // Limpa o campo de CPF/CNPJ
                 nomeLabel.innerHTML = "Razão Social"; // Altera o nome do label para Razão Social
+                cpfCnpjInput.setAttribute("placeholder", "CNPJ"); // Altera o placeholder para CNPJ
+                $(cpfCnpjInput).inputmask('99.999.999/9999-99'); // Aplica a máscara de CNPJ
+                cpfCnpjInput.focus(); // Coloca o foco no campo de CNPJ
             } else {
                 juridicaFields.style.display = "none";
+                cpfCnpjInput.value = ""; // Limpa o campo de CPF/CNPJ
                 nomeLabel.innerHTML = "Nome"; // Altera o nome do label para Nome
+                cpfCnpjInput.setAttribute("placeholder", "CPF"); // Altera o placeholder para CPF
+                $(cpfCnpjInput).inputmask('999.999.999-99'); // Aplica a máscara de CPF
+                cpfCnpjInput.focus(); // Coloca o foco no campo de CPF
             }
         }
 
         // Executa a função inicialmente para garantir que os campos estejam visíveis ou ocultos ao carregar a página
         document.addEventListener("DOMContentLoaded", function() {
             toggleFields(); // Chama a função para garantir que a exibição esteja correta
+        });
+
+        // Adiciona um listener para o campo "tipo" para alterar a máscara dinamicamente
+        document.getElementById("tipo").addEventListener("change", function() {
+            toggleFields(); // Chama a função para atualizar a máscara e os campos
         });
     </script>
 
@@ -226,11 +236,17 @@
                     const estadoId = estadoSelect.value;
                     console.log('Estado selecionado: ' + estadoId);
 
+                    // Limpa o campo de cidades
                     cidadeSelect.innerHTML = '<option value="">Selecione a cidade...</option>';
 
                     if (estadoId) {
                         fetch(`/cidades/${estadoId}`)
-                            .then(response => response.json())
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Erro ao carregar as cidades');
+                                }
+                                return response.json();
+                            })
                             .then(cidades => {
                                 console.log(cidades);
                                 cidades.forEach(cidade => {
@@ -270,13 +286,95 @@
                                 alert('CEP não encontrado');
                             } else {
                                 // Preenche os campos do formulário com os dados retornados
+
                                 $('#logradouro').val(data.logradouro);
                                 $('#bairro').val(data.bairro);
-                                $('#estado_id').val(data
-                                    .uf); // Corrigido: use o ID correto do campo estado
-                                $('#cidade_id').val(data
-                                    .localidade); // Corrigido: use o ID correto do campo cidade
 
+                                // Busca o ID do estado com base na UF retornada pela API
+                                var uf = data.uf; // UF é a sigla do estado
+                                if (uf) {
+                                    $.ajax({
+                                        url: `/estado/por-uf/${uf}`,
+                                        type: 'GET',
+                                        dataType: 'json',
+                                        success: function(response) {
+                                            console.log(response);
+                                            if (response.id) {
+                                                // Define o valor do estado_id com o ID retornado
+                                                $('#estado_id').val(response.id)
+                                                    .trigger('change');
+
+                                                // Agora, carregue as cidades com base no estado selecionado
+                                                var estadoId = response.id;
+                                                if (estadoId) {
+                                                    fetch(`/cidades/${estadoId}`)
+                                                        .then(response => response
+                                                            .json())
+                                                        .then(cidades => {
+                                                            var cidadeSelect =
+                                                                $('#cidade_id');
+                                                            cidadeSelect
+                                                                .empty(); // Limpa as opções atuais
+                                                            cidadeSelect.append(
+                                                                '<option value="">Selecione a cidade...</option>'
+                                                            );
+                                                            cidades.forEach(
+                                                                cidade => {
+                                                                    cidadeSelect
+                                                                        .append(
+                                                                            new Option(
+                                                                                cidade
+                                                                                .nome,
+                                                                                cidade
+                                                                                .id
+                                                                            )
+                                                                        );
+                                                                });
+
+                                                            // Define o valor da cidade com base no nome retornado pela API
+                                                            var cidadeNome =
+                                                                data.localidade;
+                                                            var cidadeOption =
+                                                                cidadeSelect
+                                                                .find('option')
+                                                                .filter(
+                                                                    function() {
+                                                                        return $(
+                                                                                this
+                                                                            )
+                                                                            .text()
+                                                                            .toLowerCase() ===
+                                                                            cidadeNome
+                                                                            .toLowerCase();
+                                                                    });
+
+                                                            if (cidadeOption
+                                                                .length > 0) {
+                                                                cidadeSelect
+                                                                    .val(
+                                                                        cidadeOption
+                                                                        .val());
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            console.error(
+                                                                'Erro ao carregar as cidades:',
+                                                                error);
+                                                        });
+                                                }
+                                            } else {
+                                                console.error(
+                                                    'Estado não encontrado no banco de dados.'
+                                                );
+                                            }
+                                        },
+                                        error: function() {
+                                            console.error(
+                                                'Erro ao buscar o ID do estado.'
+                                            );
+                                        }
+                                    });
+                                }
                             }
                         },
                         error: function() {

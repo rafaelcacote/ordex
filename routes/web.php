@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/fornecedores/{fornecedor}/detalhes', [FornecedorController::class, 'detalhes'])->name('fornecedores.detalhes');
     Route::delete('/fornecedores/{fornecedor}', [FornecedorController::class, 'destroy'])->name('fornecedores.destroy');
     Route::get('/cidades/{estado_id}', [FornecedorController::class, 'getCidades']);
+    Route::get('/estado/por-uf/{uf}', [FornecedorController::class, 'getIdByUf']);
 
     // Categorias
     Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias.index');
