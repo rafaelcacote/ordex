@@ -149,22 +149,20 @@
     </script>
 
     <script>
-        $('#telefone').inputmask('(99) 99999-9999', {
-            greedy: false, // Permite que a máscara seja flexível
-            clearIncomplete: true, // Limpa o campo se a entrada estiver incompleta
-            placeholder: '_', // Define o caractere de placeholder
-            definitions: {
-                '9': { // Define o padrão para o dígito 9
-                    validator: '[0-9]', // Aceita apenas números
-                    cardinality: 1 // Cada "9" representa um único dígito
-                }
-            }
+        $(document).ready(function() {
 
             // Máscara para CPF
             $('#cpf').inputmask('999.999.999-99');
 
             // Máscara para CNPJ
             $('#cnpj').inputmask('99.999.999/9999-99');
+
+
+            $(".telefone").inputmask({
+                mask: ["(99) 9999-9999", "(99) 99999-9999", ],
+                keepStatic: true
+            });
+
         });
     </script>
 

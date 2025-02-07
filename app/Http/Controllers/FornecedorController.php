@@ -24,7 +24,7 @@ class FornecedorController extends Controller
             $query->where('cpf_cnpj', 'like', '%' . $request->input('cpf_cnpj') . '%');
         }
 
-        $fornecedores = $query->paginate(10);
+        $fornecedores = $query->paginate(5);
 
         return view('fornecedores.index', compact('fornecedores'));
     }
@@ -44,6 +44,9 @@ class FornecedorController extends Controller
         // Remove caracteres não numéricos do campo cpf_cnpj
         $request->merge([
             'cpf_cnpj' => preg_replace('/\D/', '', $request->cpf_cnpj),
+            'telefone1' => preg_replace('/\D/', '', $request->telefone1),
+            'telefone2' => preg_replace('/\D/', '', $request->telefone2),
+
         ]);
 
         Fornecedor::create([
@@ -52,8 +55,10 @@ class FornecedorController extends Controller
             'nome' => $request->nome,
             'ins_estadual' => $request->ins_estadual,
             'ins_municipal' => $request->ins_municipal,
+            'fantasia' => $request->fantasia,
             'telefone1' => $request->telefone1,
             'telefone2' => $request->telefone2,
+            'contato' => $request->contato,
             'logradouro' => $request->logradouro,
             'numero' => $request->numero,
             'bairro' => $request->bairro,

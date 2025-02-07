@@ -41,15 +41,15 @@
                             <label for="tipo"><strong>Tipo</strong></label>
                             <select name="tipo" id="tipo" class="form-select @error('tipo') is-invalid @enderror"
                                 onchange="toggleFields()">
-                                <option value="F">Pessoa Física</option>
                                 <option value="J">Pessoa Jurídica</option>
+                                <option value="F">Pessoa Física</option>
                             </select>
                             @error('tipo')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-4">
-                            <label for="cpf_cnpj"><strong>CPF/CNPJ</strong></label>
+                            <label for="cpf_cnpj"><strong id="cpfcnpjLabel">CNPJ</strong></label>
                             <input type="text" name="cpf_cnpj" id="cpf_cnpj"
                                 class="form-control  @error('cpf_cnpj') is-invalid @enderror" value="{{ old('cpf_cnpj') }}"
                                 autocomplete="off">
@@ -69,7 +69,7 @@
 
 
                     <!-- Campos de Pessoa Jurídica -->
-                    <div id="juridicaFields" style="display: none;">
+                    <div id="juridicaFields" style="display: block;">
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="ins_estadual"><strong>Inscrição Estadual</strong></label>
@@ -110,7 +110,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="contato"><strong>Contato</strong></label>
-                            <input type="text" name="contato" id="telefone2" class="form-control telefone"
+                            <input type="text" name="contato" id="contato" class="form-control"
                                 value="{{ old('contato') }}">
                         </div>
                     </div>
@@ -138,7 +138,8 @@
 
                         <div class="col-md-4">
                             <label for="numero"><strong>Número</strong></label>
-                            <input type="text" name="numero" class="form-control" value="{{ old('numero') }}">
+                            <input type="text" name="numero" id="numero" class="form-control"
+                                value="{{ old('numero') }}">
                         </div>
                     </div>
 
@@ -195,12 +196,14 @@
             var juridicaFields = document.getElementById("juridicaFields");
             var nomeLabel = document.getElementById("nomeLabel");
             var cpfCnpjInput = document.getElementById("cpf_cnpj");
+            var cpfcnpjLabel = document.getElementById("cpfcnpjLabel");
 
             // Exibe ou oculta os campos de Pessoa Jurídica com base no tipo selecionado
             if (tipo == "J") {
                 juridicaFields.style.display = "block";
                 cpfCnpjInput.value = ""; // Limpa o campo de CPF/CNPJ
                 nomeLabel.innerHTML = "Razão Social"; // Altera o nome do label para Razão Social
+                cpfcnpjLabel.innerHTML = "CNPJ"; // Altera o label de CPF/CNPJ para CNPJ
                 cpfCnpjInput.setAttribute("placeholder", "CNPJ"); // Altera o placeholder para CNPJ
                 $(cpfCnpjInput).inputmask('99.999.999/9999-99'); // Aplica a máscara de CNPJ
                 cpfCnpjInput.focus(); // Coloca o foco no campo de CNPJ
@@ -209,6 +212,7 @@
                 cpfCnpjInput.value = ""; // Limpa o campo de CPF/CNPJ
                 nomeLabel.innerHTML = "Nome"; // Altera o nome do label para Nome
                 cpfCnpjInput.setAttribute("placeholder", "CPF"); // Altera o placeholder para CPF
+                cpfcnpjLabel.innerHTML = "CPF"; // Altera o label de CPF/CNPJ para CPF
                 $(cpfCnpjInput).inputmask('999.999.999-99'); // Aplica a máscara de CPF
                 cpfCnpjInput.focus(); // Coloca o foco no campo de CPF
             }
@@ -271,6 +275,8 @@
     {{-- CEP --}}
     <script>
         $(document).ready(function() {
+            inputnumero = document.getElementById('numero');
+            inputcep = document.getElementById('cep');
             // Função para aplicar a máscara no campo CEP
             $('#cep').on('input', function() {
                 var cep = $(this).val().replace(/\D/g, ''); // Remove tudo que não for número
@@ -284,9 +290,14 @@
                             if (data.erro) {
                                 // Caso o CEP não seja encontrado, avisa o usuário
                                 alert('CEP não encontrado');
+                                $('#cep').focus(function() {
+                                    $(this).select();
+                                });
+
                             } else {
                                 // Preenche os campos do formulário com os dados retornados
 
+                                inputnumero.focus();
                                 $('#logradouro').val(data.logradouro);
                                 $('#bairro').val(data.bairro);
 

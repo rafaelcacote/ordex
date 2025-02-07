@@ -91,9 +91,12 @@
                     <!-- End Table with stripped rows -->
                 </div>
 
-                {{-- <div class="d-flex pagination">
-          {{$fornecedores->appends($request->input())->links() }}
-        </div>     --}}
+                <div class="d-flex justify-content-center mt-3">
+                    <ul class="pagination">
+                        {{-- Loop pelas páginas --}}
+                        {{ $fornecedores->appends(request()->input())->links('pagination::bootstrap-4') }}
+                    </ul>
+                </div>
 
             </div>
 
