@@ -120,7 +120,7 @@
                             {{-- ABA ITENS --}}
                             <div class="tab-pane fade" id="bordered-justified-profile" role="tabpanel"
                                 aria-labelledby="profile-tab">
-                                <div class="row mb-3 mt-4">
+                                <div class="row m b-3 mt-4">
                                     <!-- Campo Código Produto -->
                                     <div class="col-md-2">
                                         <div class="form-group">
@@ -145,6 +145,20 @@
                                                 <i class="bi bi-exclamation-triangle me-1"></i>
                                                 Produto não encontrado!
                                             </div>
+                                              <!-- Aqui vai aparecer a tabela com produtos -->
+                                              <div id="produto-table-container"
+                                              style="display: none; position: absolute; margin-right:-100px; max-height: 300px; overflow-y: auto; background: #fff; border: 1px solid #ccc;">
+                                               <table class="table table-hover">
+                                                   <thead>
+                                                       <tr>
+                                                           <th scope="col">Código</th>
+                                                           <th scope="col">Nome</th>
+                                                           <th scope="col">Valor</th>
+                                                       </tr>
+                                                   </thead>
+                                                   <tbody id="produto-list"></tbody>
+                                               </table>
+                                           </div>
                                             <!-- Mensagem de erro para item não selecionado -->
                                             <div class="alert alert-warning" id="erro-item"
                                                 style="display: none; margin-top: 10px;">
@@ -152,21 +166,8 @@
                                                 Por
                                                 favor, escolha um produto.
                                             </div>
-                                        </div>
-                                    </div>
 
-                                    <!-- Aqui vai aparecer a tabela com produtos -->
-                                    <div id="produto-table-container">
-                                        <table class="table table-hover mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">Código</th>
-                                                    <th scope="col">Nome</th>
-                                                    <th scope="col">Valor</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="produto-list"></tbody>
-                                        </table>
+                                        </div>
                                     </div>
 
                                     <!-- Campo Valor Produto -->
@@ -191,9 +192,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+
                                 <!-- Tabela de Itens Inseridos -->
-                                <div class="table-responsive mt-4">
+                                <div class="col-md-12 table-responsive mt-4">
                                     <table class="table table-bordered" id="itens-inseridos">
                                         <thead>
                                             <tr>
@@ -218,7 +219,7 @@
 
                                     </div>
                                 </div>
-
+                            </div>
                             </div>
                             {{-- ABA FINALIZAR --}}
                             <div class="tab-pane fade" id="bordered-justified-contact" role="tabpanel"
@@ -241,25 +242,64 @@
     </div>
 
 
-
-
-    <!-- Modal de Erro -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="errorModalLabel">Erro ao Salvar</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="errorMessage"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
+<!-- Modal de Sucesso -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Sucesso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="successMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
+</div>
+
+<!-- Modal de Erro -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Erro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar observação -->
+<div class="modal fade" id="observacaoModal" tabindex="-1" aria-labelledby="observacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="observacaoModalLabel">Editar Observação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="observacaoText" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="salvarObservacao">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+
+@section('js')
     {{-- rege o campo codigo do fornecedor --}}
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -425,6 +465,14 @@
             document.addEventListener('click', function(event) {
                 if (!fornecedorTableContainer.contains(event.target) && event.target !== nomeInput) {
                     fornecedorTableContainer.style.display = 'none';
+                }
+            });
+
+                        // Fechar a tabela de pesquisa ao pressionar ESC
+                        document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    fornecedorTableContainer.style.display = 'none';
+                    currentIndex = -1;
                 }
             });
         });
@@ -660,7 +708,10 @@
                     <td>${estoque}</td>
                     <td>${quantidade}</td>
                     <td>${total.toFixed(2)}</td>
-                    <td><button class="btn btn-danger btn-sm delete-item"><i class="bi bi-trash"></i></button></td>
+                    <td>
+                        <button type="button" class="btn btn-warning btn-sm edit-item"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-danger btn-sm delete-item"><i class="bi bi-trash"></i></button>
+                    </td>
                 `;
                         tr.setAttribute('data-produto-id', produtoId);
 
@@ -726,6 +777,79 @@
         });
     </script>
 
+
+    {{-- Adicionar a lógica para abrir o modal e salvar a observação --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const itensList = document.getElementById('itens-list'); // Defina itensList aqui
+
+            // Variável para armazenar a linha atual que está sendo editada
+            let currentRow = null;
+
+            // Função para abrir o modal de edição de observação
+            function openObservacaoModal(row) {
+                // Recupera a observação salva no atributo data-observacao
+                const observacao = row.getAttribute('data-observacao') || '';
+                document.getElementById('observacaoText').value = observacao; // Preenche o textarea
+                currentRow = row; // Armazena a linha atual
+                const modal = new bootstrap.Modal(document.getElementById('observacaoModal'));
+                modal.show();
+            }
+
+            // Adicionar evento de clique ao botão de editar
+            itensList.addEventListener('click', function(event) {
+                const editButton = event.target.closest('.edit-item');
+                if (editButton) {
+                    const row = editButton.closest('tr');
+                    openObservacaoModal(row); // Abre o modal com a observação salva
+                }
+            });
+
+            // Salvar a observação quando o botão de salvar no modal for clicado
+            document.getElementById('salvarObservacao').addEventListener('click', function() {
+                const observacao = document.getElementById('observacaoText').value;
+                if (currentRow) {
+                    const nomeCell = currentRow.querySelector('td:nth-child(2)');
+                    const nomeProduto = nomeCell.textContent.trim(); // Captura o nome do produto (sem a observação)
+
+                    // Verifica se já existe uma observação na célula
+                    const existingObservacao = nomeCell.querySelector('.small-text');
+
+                    if (observacao) {
+                        // Se já existe uma observação, atualiza o conteúdo dela
+                        if (existingObservacao) {
+                            existingObservacao.innerHTML = `<strong>${observacao}</strong>`;
+                        } else {
+                            // Se não existe uma observação, adiciona o <br> e a observação
+                            nomeCell.innerHTML = `
+                                ${nomeProduto}
+                                <br>
+                                <span class="small-text text-muted" title="${observacao}" style="font-size: 9px;">
+                                    <strong>${observacao}</strong>
+                                </span>
+                            `;
+                        }
+                    } else {
+                        // Se a observação estiver vazia, remove o <br> e a observação
+                        if (existingObservacao) {
+                            existingObservacao.remove(); // Remove a observação
+                            const brElement = nomeCell.querySelector('br');
+                            if (brElement) {
+                                brElement.remove(); // Remove o <br>
+                            }
+                        }
+                    }
+
+                    // Atualiza o atributo data-observacao da linha
+                    currentRow.setAttribute('data-observacao', observacao);
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('observacaoModal'));
+                    modal.hide(); // Fecha o modal
+                }
+            });
+        });
+    </script>
+
+
     {{-- funcao para salvar o orcamento e os itens --}}
     <script>
         document.querySelector('.btn-success').addEventListener('click', function(event) {
@@ -735,6 +859,7 @@
             const totalQuantidade = document.getElementById('total-quantidade').textContent;
             const prazo = document.getElementById('prazo').value;
             const data = document.getElementById('data').value;
+            const observacao = document.getElementById('observacao').value;
             const itensList = document.querySelectorAll('#itens-list tr');
 
             // Verifica se o fornecedor foi selecionado
@@ -761,14 +886,19 @@
                 const estoque = row.children[2].textContent;
                 const quantidade = row.children[3].textContent;
                 const valorTotal = row.children[4].textContent;
+                const observacao = row.getAttribute('data-observacao') || '';
+
 
                 itens.push({
                     produto_id: produtoId,
                     estoque: estoque,
                     quantidade: quantidade,
                     valor_total: valorTotal,
+                    observacao: observacao,
                 });
             });
+
+            console.log(itens);
 
             const dataToSend = {
                 fornecedor_id: fornecedorId,
@@ -777,6 +907,7 @@
                 prazo: prazo,
                 data: data,
                 itens: itens,
+                observacao: observacao,
             };
 
             // Envia os dados para o backend
@@ -793,8 +924,12 @@
                 .then(data => {
                     const routeOrcamentos = @json(route('orcamentos.index'));
                     if (data.success) {
-                        alert('Orçamento salvo com sucesso!');
-                        window.location.href = routeOrcamentos;
+                        // Exibe a mensagem de sucesso
+                        showSuccessModal('Orçamento salvo com sucesso!');
+                        // Redireciona para a página de orçamentos após um pequeno delay
+                        setTimeout(() => {
+                            window.location.href = routeOrcamentos;
+                        }, 2000); // 2 segundos de delay
                     } else {
                         showErrorModal('Erro ao salvar orçamento: ' + data.message);
                     }
@@ -805,11 +940,19 @@
                 });
         });
 
-        // Função para exibir o modal de erro
-        function showErrorModal(message) {
-            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-            document.getElementById('errorMessage').textContent = message;
-            errorModal.show();
-        }
+            // Função para exibir o modal de sucesso
+            function showSuccessModal(message) {
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                document.getElementById('successMessage').textContent = message;
+                successModal.show();
+            }
+
+            // Função para exibir o modal de erro
+            function showErrorModal(message) {
+                const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                document.getElementById('errorMessage').textContent = message;
+                errorModal.show();
+            }
     </script>
+
 @endsection

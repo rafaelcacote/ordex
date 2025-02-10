@@ -166,7 +166,7 @@
         </div>
 
         <div class="section">
-            <h2><i class="fas fa-box-open"></i>Itens do Orçamento</h2>
+            <h2><i class="fas fa-box-open"></i>Itens do Pedido</h2>
             <table class="table">
                 <thead>
                     <tr>
@@ -197,12 +197,24 @@
 
         <div class="section">
             <p class="total"><span>Total Itens:</span> {{ $pedido->total_itens }}</p>
-            <p class="total"><span>Total Orçamento:</span> R$ {{ number_format($pedido->total_pedido, 2, ',', '.') }}
+            <p class="total"><span>Total Pedido:</span> R$
+                {{ number_format($pedido->total_pedido, 2, ',', '.') }}
             </p>
         </div>
+        <div class="section">
+            <p>
+                @if ($pedido->observacao)
+                <span style="font-size: 12px;"> <strong>Observação:</strong></span>
+                    <span class="small-text text-muted" style="font-size: 12px;">
+                          {{ $pedido->observacao }}
+                    </span>
+                @endif
+              </p>
+        </div>
+
 
         <div class="footer">
-            <p>Este orçamento foi gerado para impressão. Para mais informações, entre em contato.</p>
+            <p>Esse Pedido foi gerado para impressão. Para mais informações, entre em contato.</p>
             <p>© 2024 Ordex. Todos os direitos reservados.</p>
         </div>
     </div>

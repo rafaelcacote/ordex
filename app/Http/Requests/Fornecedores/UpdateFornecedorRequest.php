@@ -11,7 +11,7 @@ class UpdateFornecedorRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,8 +22,12 @@ class UpdateFornecedorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tipo' => 'required|',
-            'cpf_cnpj' => 'required|string|max:18',
+            'tipo' => 'required|in:F,J', // Garante que o tipo seja "F" (CPF) ou "J" (CNPJ)
+            'cpf_cnpj' => [
+                'required',
+                'string',
+                'max:18',
+            ],
             'nome' => 'required|string|max:255',
             'ins_estadual' => 'nullable|string|max:20',
             'ins_municipal' => 'nullable|string|max:20',
@@ -33,15 +37,15 @@ class UpdateFornecedorRequest extends FormRequest
             'numero' => 'nullable|string|max:10',
             'bairro' => 'required|string|max:100',
             'cep' => 'required|string|max:10',
-            'cidade_id' => 'required|',
+            'cidade_id' => 'required|exists:cidades,id', // Garante que o cidade_id exista na tabela cidades
         ];
     }
-
 
     public function messages(): array
     {
         return [
             'tipo.required' => 'O campo tipo é obrigatório.',
+            'tipo.in' => 'O tipo deve ser "Pessoa Física" (F) ou "Pessoa Jurídica" (J).',
             'cpf_cnpj.required' => 'O campo CPF/CNPJ é obrigatório.',
             'cpf_cnpj.max' => 'O CPF/CNPJ não pode ter mais de 18 caracteres.',
             'nome.required' => 'O campo nome é obrigatório.',
@@ -59,7 +63,7 @@ class UpdateFornecedorRequest extends FormRequest
             'cep.required' => 'O campo CEP é obrigatório.',
             'cep.max' => 'O CEP não pode ter mais de 10 caracteres.',
             'cidade_id.required' => 'O campo cidade é obrigatório.',
-
+            'cidade_id.exists' => 'A cidade selecionada é inválida.',
         ];
     }
 }

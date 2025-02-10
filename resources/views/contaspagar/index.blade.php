@@ -4,14 +4,15 @@
 @section('content')
     <div class="pagetitle">
 
-        <a href="{{ route('produtos.create') }}" class="btn btn-success novo" role="button"><i
+        <a href="{{ route('contaspagar.create') }}" class="btn btn-success novo" role="button"><i
                 class="bi bi-plus-square me-1"></i> CADASTRAR</a>
 
-        <h1>Produtos</h1>
+        <h1>Contas a Pagar</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item">Produtos</li>
+                <li class="breadcrumb-item">Financeiro</li>
+                <li class="breadcrumb-item">Contas a Pagar</li>
                 <li class="breadcrumb-item active">Pesquisar</li>
             </ol>
         </nav>
@@ -24,37 +25,30 @@
 
             <div class="card">
 
-                <form class="row g-3 pesquisa" method="GET" id="pesquisaForm" action="{{ route('produtos.index') }}">
-                    @csrf
-                    <div class="col-md-1">
-                        <label for="codigo" class="form-label"><span class="badge bg-dark">Código</span></label>
-                        <input type="text" class="form-control" id="codigo" name="codigo" value="">
+                <form class="row g-3 pesquisa" method="GET" id="pesquisaForm" action="{{ route('contaspagar.index') }}">
+
+                    <div class="col-md-3">
+                        <label for="for_nome" class="form-label"><span class="badge bg-dark">Fornecedor</span></label>
+                        <input type="text" class="form-control" id="for_nome" name="for_nome" value="">
                     </div>
                     <div class="col-md-3">
-                        <label for="nome" class="form-label"><span class="badge bg-dark">Nome</span></label>
-                        <input type="text" class="form-control" id="nome" name="nome" value="">
+                        <label for="descricao" class="form-label"><span class="badge bg-dark">Descricao</span></label>
+                        <input type="text" class="form-control" id="descricao" name="descricao" value="">
                     </div>
                     <div class="col-md-2">
-                        <label for="Categoria" class="form-label"><span class="badge bg-dark">Tipo</span></label>
-                        <select name="tipo" id="tipo" class="form-select me-2 rounded @error('tipo') is-invalid @enderror">
+                        <label for="Categoria" class="form-label"><span class="badge bg-dark">Status</span></label>
+                        <select name="status" id="status" class="form-select me-2 rounded @error('status') is-invalid @enderror">
                             <option value="">Selecione</option>
-                            <option value="P" {{ old('tipo') == 'P' ? 'selected' : '' }}>Produto</option>
-                            <option value="S" {{ old('tipo') == 'S' ? 'selected' : '' }}>Serviço</option>
+                            <option value="P" {{ old('status') == 'Paga' ? 'selected' : '' }}>Paga</option>
+                            <option value="S" {{ old('status') == 'Pendente' ? 'selected' : '' }}>Pendente</option>
                         </select>
                     </div>
-                    <div class="col-md-2">
-                        <label for="Categoria" class="form-label"><span class="badge bg-dark">Categoria</span></label>
-                        <select name="categoria_id" id="categoria_id" class="form-select me-2 rounded @error('categoria_id') is-invalid @enderror ">
-                            <option value="">Selecione</option>
-                            @foreach ($categorias as $categoria)
-                                <option value="{{ $categoria->id }}" {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nome }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+
+
                     <div class="col-md-4 botao">
                         <button type="submit" class="btn btn-warning">Pesquisar</button>
                         <button type="button" class="btn btn-danger"
-                            onclick="window.location='{{ route('produtos.index') }}'"><i
+                            onclick="window.location='{{ route('contaspagar.index') }}'"><i
                                 class="bi bi-backspace"></i></button>
                     </div>
 
@@ -62,30 +56,43 @@
 
                 <!-- Table with stripped rows -->
                 <div class="table-responsive">
-                    @if ($produtos->isEmpty())
+                    @if ($contaspagar->isEmpty())
                     <div class="alert alert-warning" role="alert">
-                        Nenhum Produto encontrado.
+                        Nenhuma Contas a pagar encontrado.
                     </div>
                 @else
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
                                 <th scope="col">Código</th>
-                                <th scope="col">Nome</th>
-                                <th scope="col">Tipo</th>
-                                <th scope="col">Categoria</th>
+                                <th scope="col">Descrição</th>
+                                <th scope="col">Vencimento</th>
+                                <th scope="col">Valor</th>
+                                <th scope="col">Parcela</th>
+                                <th scope="col">Status</th>
                                 <th scope="col">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($produtos as $produto)
-                                <tr data-id="{{ $produto->for_codigo }}">
-                                    <th scope="row">{{ $produto->codigo }}</th>
-                                    <td>{{ $produto->nome }}</td>
-                                    <td>{{ $produto->tipo_display }}</td>
-                                    <td>{{ $produto->categoria->nome }}</td>
+                            @foreach ($contaspagar as $item)
+                                <tr data-id="{{ $item->for_codigo }}">
+                                    <td><strong>{{ $item->id }}</strong></td>
+                                    <td>{{ $item->descricao }}</td>
+                                    <td>{{ $item->vencimento }}</td>
+                                    <td>{{ $item->valor_quitacao }}</td>
+                                    <td>{{ $item->parcela }}</td>
+                                    <td>
+                                        <!-- Exibir o status com a badge -->
+                                        @if ($item->status == 'Pago')
+                                            <span class="badge bg-success"><i
+                                                class="bi bi-check-circle me-1"></i>Pago</span>
+                                        @elseif($item->status == 'Pendente')
+                                            <span class="badge bg-danger"><i
+                                                class="bi bi-clock-history me-1"></i>Pendente</span>
+                                        @endif
+                                    </td>
                                     <td style="width: 60px;text-align: center">
-                                        <a href="{{ route('produtos.edit', $produto->id) }}" type="button"
+                                        <a href="{{ route('contaspagar.edit', $item->id) }}" type="button"
                                             class="btn btn-primary acao" role="button"><i
                                                 class="bi bi-pencil-square"></i></a>
                                     </td>
@@ -93,12 +100,12 @@
                                         <a href="" type="button" class="btn btn-info acao"><i class="bi bi-plus-square"></i></a> --}}
 
                                     <td style="width: 60px;text-align: center">
-                                        <form action="{{ route('produtos.destroy', $produto->id) }}" method="POST"
+                                        <form action="{{ route('contaspagar.destroy', $item->id) }}" method="POST"
                                             style="display: inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-sm btn-danger"
-                                                onclick="confirmDelete(event, this.form, '{{ $produto->nome }}')">
+                                                onclick="confirmDelete(event, this.form, '{{ $item->nome }}')">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
@@ -115,8 +122,7 @@
 
                 <div class="d-flex justify-content-center mt-3">
                     <ul class="pagination">
-                        {{-- Loop pelas páginas --}}
-                        {{ $produtos->appends(request()->input())->links('pagination::bootstrap-4') }}
+                        {{ $contaspagar->appends(request()->input())->links('pagination::bootstrap-4') }}
                     </ul>
                 </div>
 

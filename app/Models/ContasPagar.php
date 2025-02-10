@@ -38,4 +38,22 @@ class ContasPagar extends Model
     {
         return $this->belongsTo(FormaPagamento::class);
     }
+
+    // Função para formatar o valor do orçamento como moeda
+    public function getValorQuitacaoAttribute()
+    {
+        return 'R$ ' . number_format($this->attributes['valor_quitacao'], 2, ',', '.');
+    }
+
+    public function getVencimentoAttribute()
+    {
+
+        return date('d/m/Y', strtotime($this->attributes['vencimento']));
+    }
+
+    public function getDataFormatadaAttribute()
+    {
+        // Verifica se o campo data é válido e formata a data
+        return date('d/m/Y', strtotime($this->data));
+    }
 }

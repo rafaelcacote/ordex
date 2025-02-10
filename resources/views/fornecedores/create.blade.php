@@ -32,17 +32,17 @@
 
                         </div>
                     @enderror
+
                     <!-- -- Final do Titulo da Pagina -- -->
 
 
                     <!-- Tipo de Fornecedor -->
                     <div class="row mb-3">
-                        <div class="col-md-2">
+                        <div class="col-md-4">
                             <label for="tipo"><strong>Tipo</strong></label>
-                            <select name="tipo" id="tipo" class="form-select @error('tipo') is-invalid @enderror"
-                                onchange="toggleFields()">
-                                <option value="J">Pessoa Jurídica</option>
-                                <option value="F">Pessoa Física</option>
+                            <select name="tipo" id="tipo" class="form-select @error('tipo') is-invalid @enderror" onchange="toggleFields()">
+                                <option value="J" {{ old('tipo') == 'J' ? 'selected' : '' }}>Pessoa Jurídica</option>
+                                <option value="F" {{ old('tipo') == 'F' ? 'selected' : '' }}>Pessoa Física</option>
                             </select>
                             @error('tipo')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -57,7 +57,7 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="nome"><strong id="nomeLabel">Nome</strong></label>
                             <input type="text" name="nome" id="nome"
                                 class="form-control @error('nome') is-invalid @enderror" value="{{ old('nome') }}">
@@ -145,7 +145,7 @@
 
                     <!-- Bairro, CEP e Cidade -->
                     <div class="row mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="bairro"><strong>Bairro</strong></label>
                             <input type="text" name="bairro" id="bairro"
                                 class="form-control @error('bairro') is-invalid @enderror" value="{{ old('bairro') }}">
@@ -154,7 +154,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="estado"><strong>Estado</strong></label>
                                 <select name="estado_id" id="estado_id"
@@ -172,12 +172,15 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label for="cidade_id"><strong>Cidade</strong></label>
-                            <select name="cidade_id" id="cidade_id" class="form-select">
+                            <select name="cidade_id" id="cidade_id" class="form-select form-select me-2 rounded @error('cidade_id') is-invalid @enderror ">
                                 <option value="">Selecione a cidade...</option>
                                 <!-- As cidades serão carregadas aqui via AJAX -->
                             </select>
+                            @error('cidade_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                         </div>
 
                     </div>
@@ -201,20 +204,16 @@
             // Exibe ou oculta os campos de Pessoa Jurídica com base no tipo selecionado
             if (tipo == "J") {
                 juridicaFields.style.display = "block";
-                cpfCnpjInput.value = ""; // Limpa o campo de CPF/CNPJ
                 nomeLabel.innerHTML = "Razão Social"; // Altera o nome do label para Razão Social
                 cpfcnpjLabel.innerHTML = "CNPJ"; // Altera o label de CPF/CNPJ para CNPJ
                 cpfCnpjInput.setAttribute("placeholder", "CNPJ"); // Altera o placeholder para CNPJ
                 $(cpfCnpjInput).inputmask('99.999.999/9999-99'); // Aplica a máscara de CNPJ
-                cpfCnpjInput.focus(); // Coloca o foco no campo de CNPJ
             } else {
                 juridicaFields.style.display = "none";
-                cpfCnpjInput.value = ""; // Limpa o campo de CPF/CNPJ
                 nomeLabel.innerHTML = "Nome"; // Altera o nome do label para Nome
                 cpfCnpjInput.setAttribute("placeholder", "CPF"); // Altera o placeholder para CPF
                 cpfcnpjLabel.innerHTML = "CPF"; // Altera o label de CPF/CNPJ para CPF
                 $(cpfCnpjInput).inputmask('999.999.999-99'); // Aplica a máscara de CPF
-                cpfCnpjInput.focus(); // Coloca o foco no campo de CPF
             }
         }
 
@@ -305,7 +304,7 @@
                                 var uf = data.uf; // UF é a sigla do estado
                                 if (uf) {
                                     $.ajax({
-                                        url: `/estado/por-uf/${uf}`,
+                                        url: "{{ route('estado.uf', ['uf' => '__uf_placeholder__']) }}".replace('__uf_placeholder__', uf),
                                         type: 'GET',
                                         dataType: 'json',
                                         success: function(response) {
@@ -318,7 +317,7 @@
                                                 // Agora, carregue as cidades com base no estado selecionado
                                                 var estadoId = response.id;
                                                 if (estadoId) {
-                                                    fetch(`/cidades/${estadoId}`)
+                                                    fetch("{{ route('cidades.estado', ['estado_id' => '__estadoId_placeholder__']) }}".replace('__estadoId_placeholder__', estadoId))
                                                         .then(response => response
                                                             .json())
                                                         .then(cidades => {
@@ -396,4 +395,8 @@
             });
         });
     </script>
+
+
+
+
 @endsection

@@ -49,6 +49,14 @@ class ProdutoController extends Controller
     // Salva um novo produto
     public function store(StoreProdutoRequest $request)
     {
+        // Verifica se o codigo já existe
+        $codigoExistente = Produto::where('codigo', $request->codigo)->exists();
+
+        if ($codigoExistente) {
+            return redirect()->back()
+                ->withErrors(['codigo' => 'Este código já está cadastrado no sistema.'])
+                ->withInput();
+        }
 
         Produto::create([
             'codigo' => $request->codigo,

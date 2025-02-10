@@ -7,6 +7,8 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\OrcamentoController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\ContaPagarController;
+use App\Http\Controllers\ContasPagarController;
 use App\Http\Controllers\UserController;
 
 
@@ -48,8 +50,8 @@ Route::middleware('auth')->group(function () {
     //Route::get('/fornecedores/pesquisar', [FornecedorController::class, 'pesquisar'])->name('fornecedores.pesquisar');
     Route::get('/fornecedores/{fornecedor}/detalhes', [FornecedorController::class, 'detalhes'])->name('fornecedores.detalhes');
     Route::delete('/fornecedores/{fornecedor}', [FornecedorController::class, 'destroy'])->name('fornecedores.destroy');
-    Route::get('/cidades/{estado_id}', [FornecedorController::class, 'getCidades']);
-    Route::get('/estado/por-uf/{uf}', [FornecedorController::class, 'getIdByUf']);
+    Route::get('/cidades/{estado_id}', [FornecedorController::class, 'getCidades'])->name('cidades.estado');
+    Route::get('/estado/por-uf/{uf}', [FornecedorController::class, 'getIdByUf'])->name('estado.uf');
 
     // Categorias
     Route::get('/categorias', [CategoriaController::class, 'index'])->name('categorias.index');
@@ -84,7 +86,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orcamentos/{orcamento}/detalhes', [OrcamentoController::class, 'detalhes'])->name('orcamentos.detalhes');
     Route::delete('/orcamentos/{orcamento}', [OrcamentoController::class, 'destroy'])->name('orcamentos.destroy');
     Route::post('/salvar-orcamento', [OrcamentoController::class, 'salvarOrcamento'])->name('orcamento.salvar');
-    Route::put('/atualizar-orcamento/{id}', [OrcamentoController::class, 'atualizarOrcamento']);
+    Route::put('/atualizar-orcamento/{id}', [OrcamentoController::class, 'atualizarOrcamento'])->name('orcamento.atualizar');
     Route::get('/orcamento/{id}/pdf', [OrcamentoController::class, 'generatePdf'])->name('orcamento.pdf');
     Route::get('/buscar-fornecedor/{codigo}', [OrcamentoController::class, 'buscarFornecedor'])->name('buscar.fornecedor');
     Route::get('/fornecedores/buscar', [OrcamentoController::class, 'buscarPorNome'])->name('buscar.fornecedor.nome');
@@ -103,4 +105,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/atualizar-pedido/{id}', [PedidoController::class, 'atualizarPedido'])->name('pedido.atualizar');
     Route::get('/pedido/{id}/pdf', [PedidoController::class, 'generatePdf'])->name('pedido.pdf');
     Route::post('calcular-parcelas', [PedidoController::class, 'calcularParcelas'])->name('calcular.parcelas');
+
+    // Contas a pagar
+    Route::get('/contaspagar', [ContasPagarController::class, 'index'])->name('contaspagar.index');
+    Route::get('/contaspagar/adicionar', [ContasPagarController::class, 'create'])->name('contaspagar.create');
+    Route::post('/contaspagar', [ContasPagarController::class, 'store'])->name('contaspagar.store');
+    Route::get('/contaspagar/{contaspagar}/editar', [ContasPagarController::class, 'edit'])->name('contaspagar.edit');
+    Route::put('/contaspagar/{contaspagar}', [ContasPagarController::class, 'update'])->name('contaspagar.update');
+    //Route::get('/contaspagar/pesquisar', [ContasPagarController::class, 'pesquisar'])->name('contaspagar.pesquisar');
+    Route::get('/contaspagar/{contaspagar}/detalhes', [ContasPagarController::class, 'detalhes'])->name('contaspagar.detalhes');
+    Route::delete('/contaspagar/{contaspagar}', [ContasPagarController::class, 'destroy'])->name('contaspagar.destroy');
 });

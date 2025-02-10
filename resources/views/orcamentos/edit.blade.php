@@ -56,7 +56,7 @@
                                 <div class="form-group">
                                     <label for="codigo"><strong>Código</strong></label>
                                     <input type="text" name="codigo" id="codigo" class="form-control"
-                                        value="{{ $orcamento->fornecedor_id }}" readonly>
+                                        value="{{ $orcamento->fornecedor_id }}" readonly style="background-color: #e9ecef;">
                                     <input type="hidden" name="orcamento_id" id="orcamento_id"
                                         value="{{ $orcamento->id }}">
 
@@ -66,7 +66,7 @@
                                 <div class="form-group">
                                     <label for="nome"><strong>Fornecedor</strong></label>
                                     <input type="text" name="nome" id="nome" class="form-control"
-                                        value="{{ $orcamento->fornecedor->nome }}" readonly>
+                                        value="{{ $orcamento->fornecedor->nome }}" readonly style="background-color: #e9ecef;">
                                 </div>
                             </div>
                             <div class="row mb-3 mt-4">
@@ -172,7 +172,6 @@
                                         <th>Valor</th>
                                         <th>Quantidade</th>
                                         <th>Valor Total</th>
-                                        <th>Observação</th>
                                         <th>Ações</th>
                                     </tr>
                                 </thead>
@@ -180,17 +179,20 @@
                                     @foreach (session('itens_orcamento', []) as $item)
                                         <tr data-produto-id="{{ $item->produto_id }}">
                                             <td>{{ $item->produto->codigo }}</td>
-                                            <td>{{ $item->produto->nome }}</td>
+                                            <td>{{ $item->produto->nome }} <br>
+                                             <!-- Adiciona a observação abaixo do nome do produto -->
+                                             @if ($item->observacao)
+                                                <span class="small-text text-muted" title="{{ $item->observacao }}"
+                                                    style="font-size: 9px;">
+                                                    <strong>{{ $item->observacao }}</strong>
+                                                </span>
+                                            @endif
+                                        </td>
                                             <td>{{ $item->produto->estoque }}</td>
                                             <td>{{ $item->quantidade }}</td>
                                             <td>{{ $item->valor_total }}</td>
-                                            <td class="observacao-cell" title="{{ $item->observacao }}">
-                                                {{ Str::limit($item->observacao, 5) }}
-                                                <!-- Exibe apenas o início, com 20 caracteres -->
-                                            </td>
                                             <td>
-                                                <button class="btn btn-warning btn-sm add-observacao"
-                                                    data-id="{{ $item->produto_id }}">
+                                                <button type="button" class="btn btn-warning btn-sm edit-item">
                                                     <i class="bi bi-pencil"></i>
                                                 </button>
                                                 <button class="btn btn-danger btn-sm delete-item">
@@ -216,7 +218,7 @@
                         <div class="row mb-3 mt-4">
                             <div class="col-md-12">
                                 <label for="observacao" class="form-label"><strong>Observação</strong></label>
-                                <textarea class="form-control " id="observacao" name="observacao"value="{{ old('observacao') }}" autocomplete=off>  </textarea>
+                                <textarea class="form-control" id="observacao" name="observacao" autocomplete="off">{{ old('observacao', $orcamento->observacao) }}</textarea>
                             </div>
                         </div>
                     </div><!-- End Bordered Tabs Justified -->
@@ -228,43 +230,62 @@
 
 
 
-    <!-- Modal de Erro -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="errorModalLabel">Erro ao Salvar</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="errorMessage"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
+<!-- Modal de Sucesso -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Sucesso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="successMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal de Observação -->
-    <div class="modal fade" id="observacaoModal" tabindex="-1" aria-labelledby="observacaoModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="observacaoModalLabel">Adicionar Observação</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <textarea id="observacaoInput" class="form-control" rows="4" placeholder="Digite sua observação aqui..."></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveObservacaoBtn">Salvar Observação</button>
-                </div>
+<!-- Modal de Erro -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Erro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
+</div>
+
+
+
+<!-- Modal para editar observação -->
+<div class="modal fade" id="observacaoModal" tabindex="-1" aria-labelledby="observacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="observacaoModalLabel">Editar Observação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="observacaoText" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="salvarObservacao">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     {{-- pesquisa pelo codigo do produto --}}
     <script>
@@ -332,7 +353,7 @@
             const rect = nomeprodutoInput.getBoundingClientRect(); // Pega a posição do campo nome_produto
 
             if (termo.length >= 3) {
-                fetch("{{ route('buscar.fornecedor.nome') }}?nome=" + encodeURIComponent(termo))
+                fetch("{{ route('buscar.produto.nome') }}?nome=" + encodeURIComponent(termo))
                     .then(response => response.json())
                     .then(data => {
                         produtoList.innerHTML = '';
@@ -473,10 +494,11 @@
                         }
                     });
 
-                    if (itemExists) {
-                        alert('Este item já foi adicionado.');
-                        return; // Impede a adição do item novamente
-                    }
+                    // Verifica se o item já foi adicionado
+                    // if (itemExists) {
+                    //     alert('Este item já foi adicionado.');
+                    //     return; // Impede a adição do item novamente
+                    // }
 
                     // Se o item não existir, prossegue com a adição à tabela
                     const total = parseFloat(estoque) * parseInt(quantidade);
@@ -488,7 +510,11 @@
                     <td>${estoque}</td>
                     <td>${quantidade}</td>
                     <td>${total.toFixed(2)}</td>
-                    <td><button class="btn btn-danger btn-sm delete-item"><i class="bi bi-trash"></i></button></td>
+                    <td>
+                         <button type="button" class="btn btn-warning btn-sm edit-item" data-id="${produtoId}">
+            <i class="bi bi-pencil"></i>
+        </button>
+                        <button class="btn btn-danger btn-sm delete-item"><i class="bi bi-trash"></i></button></td>
                 `;
                     tr.setAttribute('data-produto-id', produtoId);
 
@@ -541,14 +567,78 @@
         }
     </script>
 
+    {{-- lógica para abrir o modal e salvar a observação --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const itensList = document.getElementById('itens-list'); // Tabela de itens
+        let currentRow = null; // Linha atual sendo editada
+
+        // Função para abrir o modal de edição de observação
+        function openObservacaoModal(row) {
+            const observacao = row.getAttribute('data-observacao') || ''; // Recupera a observação atual
+            document.getElementById('observacaoText').value = observacao; // Preenche o textarea
+            currentRow = row; // Armazena a linha atual
+            const modal = new bootstrap.Modal(document.getElementById('observacaoModal'));
+            modal.show(); // Abre o modal
+        }
+
+        // Adicionar evento de clique ao botão de editar (usando delegação de eventos)
+        itensList.addEventListener('click', function(event) {
+            const editButton = event.target.closest('.edit-item');
+            if (editButton) {
+                const row = editButton.closest('tr'); // Captura a linha correspondente
+                openObservacaoModal(row); // Abre o modal para editar a observação
+            }
+        });
+
+        // Salvar a observação quando o botão de salvar no modal for clicado
+        document.getElementById('salvarObservacao').addEventListener('click', function() {
+            const observacao = document.getElementById('observacaoText').value; // Captura a observação
+            if (currentRow) {
+                const nomeCell = currentRow.querySelector('td:nth-child(2)'); // Célula do nome do produto
+
+                // Verifica se já existe uma observação na célula
+                const existingObservacao = nomeCell.querySelector('.small-text');
+
+                if (observacao) {
+                    // Se já existe uma observação, atualiza o texto
+                    if (existingObservacao) {
+                        existingObservacao.innerHTML = `<strong>${observacao}</strong>`;
+                    } else {
+                        // Se não existe uma observação, adiciona o <br> e a observação
+                        nomeCell.innerHTML += `
+                            <br>
+                            <span class="small-text text-muted" title="${observacao}" style="font-size: 9px;">
+                                <strong>${observacao}</strong>
+                            </span>
+                        `;
+                    }
+                } else {
+                    // Se a observação estiver vazia, remove o <br> e a observação
+                    if (existingObservacao) {
+                        existingObservacao.remove(); // Remove a observação
+                        const brElement = nomeCell.querySelector('br');
+                        if (brElement) {
+                            brElement.remove(); // Remove o <br>
+                        }
+                    }
+                }
+
+                // Atualiza o atributo data-observacao da linha
+                currentRow.setAttribute('data-observacao', observacao);
+                const modal = bootstrap.Modal.getInstance(document.getElementById('observacaoModal'));
+                modal.hide(); // Fecha o modal
+            }
+        });
+    });
+</script>
+
     <!-- Script de Submissão dos Dados para o Backend -->
     <script>
-        document.querySelector('.btn-primary').addEventListener('click', function(event) {
+        document.querySelector('.btn-success').addEventListener('click', function(event) {
             event.preventDefault();
 
             const itensList = document.querySelectorAll('#itens-list tr');
-
-
 
             const totalValores = document.getElementById('total-valores').textContent
                 .replace('R$', '')
@@ -567,8 +657,9 @@
                 const estoque = row.children[2].textContent;
                 const quantidade = row.children[3].textContent;
                 const valorTotal = row.children[4].textContent;
-                const observacao = row.querySelector('.observacao-cell') ? row.querySelector(
-                    '.observacao-cell').textContent : '';
+                //const observacao = row.getAttribute('data-observacao') || ''; // Observação
+                const observacao = row.querySelector('span.small-text') ? row.querySelector('span.small-text').textContent : '';  // Ajuste para pegar corretamente a observação.
+                    ''; // Pega o texto do span da observação
                 // const valorTotal = row.children[4].textContent
                 // .replace('R$', '')
                 // .replace(/\./g, '')
@@ -592,6 +683,7 @@
                 data: document.getElementById('data').value,
                 itens: itens,
                 status: document.getElementById('status').value,
+                observacao: document.getElementById('observacao').value
             };
 
             // Aqui você precisa pegar o ID do orçamento que você deseja atualizar (exemplo, orcamentoId)
@@ -599,7 +691,11 @@
                 .value; // Supondo que você tenha esse campo no seu form
 
             // Envia os dados para o backend
-            fetch(`/atualizar-orcamento/${orcamentoId}`, { // Ajuste a URL para a de atualização
+            const updateUrl = "{{ route('orcamento.atualizar', ':orcamentoId') }}".replace(':orcamentoId', orcamentoId);
+
+
+            // Envia os dados para o backend
+            fetch(updateUrl, { // Ajuste a URL para a de atualização
                     method: 'PUT', // Mudamos o método para PUT (para atualizar)
                     headers: {
                         'Content-Type': 'application/json',
@@ -610,11 +706,16 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    const orcamentosIndexRoute = "{{ route('orcamentos.index') }}";
                     if (data.success) {
-                        alert('Orçamento atualizado com sucesso!');
-                        window.location.href = '/orcamentos'; // Redireciona para a lista de orçamentos
+                        // Exibe a mensagem de sucesso
+                        showSuccessModal('Orçamento salvo com sucesso!');
+                        // Redireciona para a página de orçamentos após um pequeno delay
+                        setTimeout(() => {
+                            window.location.href = routeOrcamentos;
+                        }, 2000); // 2 segundos de delay
                     } else {
-                        showErrorModal('Erro ao atualizar orçamento: ' + data.message);
+                        showErrorModal('Erro ao salvar orçamento: ' + data.message);
                     }
                 })
                 .catch(error => {
@@ -627,44 +728,19 @@
         function calcularTotalOrcamento(itens) {
             return itens.reduce((total, item) => total + parseFloat(item.valor_total), 0);
         }
-    </script>
 
-    {{-- JavaScript para o botão de observação e salvar --}}
-    <script>
-        let currentItemId = null;
-
-        // Quando o botão de "Adicionar Observação" é clicado
-        document.querySelectorAll('.add-observacao').forEach(button => {
-            button.addEventListener('click', function() {
-                currentItemId = button.getAttribute('data-id'); // Pega o ID do item clicado
-                const observacao = document.querySelector(`#item-${currentItemId}-observacao`)
-                    ?.textContent || ''; // Pega a observação, caso já exista
-                document.getElementById('observacaoInput').value =
-                    observacao; // Preenche o campo com a observação (se houver)
-                new bootstrap.Modal(document.getElementById('observacaoModal')).show(); // Abre o modal
-            });
-        });
-        document.getElementById('saveObservacaoBtn').addEventListener('click', function() {
-            const observacao = document.getElementById('observacaoInput').value.trim();
-
-            if (observacao !== '') {
-                // Atualiza a observação na tabela (apenas para visualização do usuário)
-                const itemRow = document.querySelector(`tr[data-produto-id="${currentItemId}"]`);
-                if (itemRow) {
-                    let observacaoCell = itemRow.querySelector('.observacao-cell');
-                    if (!observacaoCell) {
-                        // Se a célula de observação não existir, cria ela
-                        observacaoCell = document.createElement('td');
-                        observacaoCell.classList.add('observacao-cell');
-                        itemRow.appendChild(observacaoCell);
-                    }
-                    observacaoCell.textContent = observacao; // Exibe a observação na tabela
-                }
-
-
-                // Fechar o modal
-                bootstrap.Modal.getInstance(document.getElementById('observacaoModal')).hide();
+                  // Função para exibir o modal de sucesso
+                  function showSuccessModal(message) {
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                document.getElementById('successMessage').textContent = message;
+                successModal.show();
             }
-        });
+
+            // Função para exibir o modal de erro
+            function showErrorModal(message) {
+                const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                document.getElementById('errorMessage').textContent = message;
+                errorModal.show();
+            }
     </script>
 @endsection

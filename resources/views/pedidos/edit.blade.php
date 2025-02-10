@@ -3,272 +3,283 @@
 
 @section('content')
     <div class="card">
-        {{-- <form class="row g-3 cadastro" method="POST" action="{{ route('categorias.update', $categoria->id) }}" novalidate>
+        <form class="row g-3 cadastro" method="POST" action="{{ route('pedidos.update', $pedido->id) }}" novalidate>
             @csrf
-            @method('PUT') --}}
-        <div class="pagetitle">
+            @method('PUT')
+            <div class="pagetitle">
 
-            <button type="submit" class="btn btn-success salvar"><i class="bi bi-save2 me-1"></i> SALVAR</button>
-            <a href="{{ route('pedidos.index') }}" class="btn btn-danger cancelar"><i class="bi bi-backspace me-1"></i>
-                CANCELAR</a>
-            <h1>Pedido - Editar</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                    <li class="breadcrumb-item">Financeiro</li>
-                    <li class="breadcrumb-item active">Pedido</li>
-                </ol>
-            </nav>
-        </div>
-        @error('mensagem')
-            <div class="alert alert-danger" role="alert" id="mensagemErro">
-                {{ $message }}
+                <button type="submit" class="btn btn-success salvar"><i class="bi bi-save2 me-1"></i> SALVAR</button>
+                <a href="{{ route('pedidos.index') }}" class="btn btn-danger cancelar"><i class="bi bi-backspace me-1"></i>
+                    CANCELAR</a>
+                <h1>Pedido - Editar</h1>
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                        <li class="breadcrumb-item">Financeiro</li>
+                        <li class="breadcrumb-item active">Pedido</li>
+                    </ol>
+                </nav>
             </div>
-        @enderror
-        <!-- -- Final do Titulo da Pagina -- -->
+            @error('mensagem')
+                <div class="alert alert-danger" role="alert" id="mensagemErro">
+                    {{ $message }}
+                </div>
+            @enderror
+            <!-- -- Final do Titulo da Pagina -- -->
 
-        <!-- Campos -->
-        <div class="card-body">
-            <!-- Bordered Tabs Justified -->
-            <ul class="nav nav-tabs nav-tabs-bordered d-flex" id="borderedTabJustified" role="tablist">
-                <li class="nav-item flex-fill" role="presentation">
-                    <button class="nav-link w-100 active" id="home-tab" data-bs-toggle="tab"
-                        data-bs-target="#bordered-justified-home" type="button" role="tab" aria-controls="home"
-                        aria-selected="false" tabindex="-1">Geral</button>
-                </li>
-                <li class="nav-item flex-fill" role="presentation">
-                    <button class="nav-link w-100" id="profile-tab" data-bs-toggle="tab"
-                        data-bs-target="#bordered-justified-profile" type="button" role="tab" aria-controls="profile"
-                        aria-selected="false" tabindex="-1">Itens</button>
-                </li>
-                <li class="nav-item flex-fill" role="presentation">
-                    <button class="nav-link w-100" id="contact-tab" data-bs-toggle="tab"
-                        data-bs-target="#bordered-justified-contact" type="button" role="tab" aria-controls="contact"
-                        aria-selected="true">Finalizar</button>
-                </li>
-            </ul>
-            <div class="tab-content pt-2" id="borderedTabJustifiedContent">
-                {{-- ABA Geral --}}
-                <div class="tab-pane fade active show" id="bordered-justified-home" role="tabpanel"
-                    aria-labelledby="home-tab">
-                    <div class="row mb-3 mt-4">
-
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="codigo"><strong>Código</strong></label>
-                                <input type="text" name="codigo" id="codigo" class="form-control"
-                                    value="{{ $pedido->fornecedor_id }}" readonly>
-                                <input type="hidden" name="pedido_id" id="pedido_id" value="{{ $pedido->id }}">
-
-                            </div>
-                        </div>
-                        <div class="col-md-10">
-                            <div class="form-group">
-                                <label for="nome"><strong>Fornecedor</strong></label>
-                                <input type="text" name="nome" id="nome" class="form-control"
-                                    value="{{ $pedido->fornecedor->nome }}" disabled>
-                            </div>
-                        </div>
+            <!-- Campos -->
+            <div class="card-body">
+                <!-- Bordered Tabs Justified -->
+                <ul class="nav nav-tabs nav-tabs-bordered d-flex" id="borderedTabJustified" role="tablist">
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button class="nav-link w-100 active" id="home-tab" data-bs-toggle="tab"
+                            data-bs-target="#bordered-justified-home" type="button" role="tab" aria-controls="home"
+                            aria-selected="false" tabindex="-1">Geral</button>
+                    </li>
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button class="nav-link w-100" id="profile-tab" data-bs-toggle="tab"
+                            data-bs-target="#bordered-justified-profile" type="button" role="tab"
+                            aria-controls="profile" aria-selected="false" tabindex="-1">Itens</button>
+                    </li>
+                    <li class="nav-item flex-fill" role="presentation">
+                        <button class="nav-link w-100" id="contact-tab" data-bs-toggle="tab"
+                            data-bs-target="#bordered-justified-contact" type="button" role="tab"
+                            aria-controls="contact" aria-selected="true">Finalizar</button>
+                    </li>
+                </ul>
+                <div class="tab-content pt-2" id="borderedTabJustifiedContent">
+                    <div class="tab-pane fade active show" id="bordered-justified-home" role="tabpanel"
+                        aria-labelledby="home-tab">
+                        <!-- Primeira Linha: Código e Nome -->
                         <div class="row mb-3 mt-4">
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <div class="form-group">
-                                    <label for="status"><strong>Status</strong></label>
-                                    <select name="status" id="status" class="form-select">
-                                        <option value="Aberto" {{ $pedido->status == 'Aberto' ? 'selected' : '' }}>Aberto
-                                        </option>
-                                        <option value="Enviado" {{ $pedido->status == 'Enviado' ? 'selected' : '' }}>Enviado
-                                        </option>
-                                        <option value="Respondido" {{ $pedido->status == 'Respondido' ? 'selected' : '' }}>
-                                            Respondido</option>
-                                        <option value="Finalizado" {{ $pedido->status == 'Finalizado' ? 'selected' : '' }}>
-                                            Finalizado</option>
-                                    </select>
+                                    <label for="codigo"><strong>Código</strong></label>
+                                    <input type="text" name="codigo" id="codigo" class="form-control"
+                                        value="{{ $pedido->fornecedor_id }}" readonly style="background-color: #e9ecef;">
+                                    <input type="hidden" name="pedido_id" id="pedido_id"
+                                        value="{{ $pedido->id }}">
+
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-10">
                                 <div class="form-group">
-                                    <label for="prazo"><strong>Prazo</strong></label>
-                                    <input type="date" name="prazo" id="prazo" class="form-control"
-                                        value="{{ $pedido->prazo }}">
+                                    <label for="nome"><strong>Fornecedor</strong></label>
+                                    <input type="text" name="nome" id="nome" class="form-control"
+                                        value="{{ $pedido->fornecedor->nome }}" readonly style="background-color: #e9ecef;">
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="data"><strong>Data</strong></label>
-                                    <input type="date" name="data" id="data" class="form-control"
-                                        value="{{ $pedido->data }}">
+                            <div class="row mb-3 mt-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="status"><strong>Status</strong></label>
+                                        <select name="status" id="status" class="form-select">
+                                            <option value="Aberto" {{ $pedido->status == 'Aberto' ? 'selected' : '' }}>
+                                                Aberto</option>
+                                            <option value="Enviado" {{ $pedido->status == 'Enviado' ? 'selected' : '' }}>
+                                                Enviado</option>
+                                            <option value="Respondido"
+                                                {{ $pedido->status == 'Respondido' ? 'selected' : '' }}>Respondido
+                                            </option>
+                                            <option value="Finalizado"
+                                                {{ $pedido->status == 'Finalizado' ? 'selected' : '' }}>Finalizado
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="data"><strong>Data</strong></label>
+                                        <input type="date" name="data" id="data" class="form-control"
+                                            value="{{ $pedido->data }}">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                {{-- ABA Itens Produto --}}
-                <div class="tab-pane fade" id="bordered-justified-profile" role="tabpanel"
-                    aria-labelledby="profile-tab">
-                    <div class="row mb-3 mt-4">
-                        <!-- Campo Código Produto -->
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="codigo_produto"><strong>Código</strong></label>
-                                <input type="text" name="codigo_produto" id="codigo_produto" class="form-control">
-                                <input type="hidden" name="produto_id" id="produto_id">
+                    <div class="tab-pane fade" id="bordered-justified-profile" role="tabpanel"
+                        aria-labelledby="profile-tab">
+                        <div class="row mb-3 mt-4">
+                            <!-- Campo Código Produto -->
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="codigo_produto"><strong>Código</strong></label>
+                                    <input type="text" name="codigo_produto" id="codigo_produto"
+                                        class="form-control">
+                                    <input type="hidden" name="produto_id" id="produto_id">
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Campo Nome Produto -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="nome_produto"><strong>Produto</strong></label>
-                                <input type="text" name="nome_produto" id="nome_produto" class="form-control"
-                                    autocomplete="off">
-                                <div class="alert alert-warning alert-dismissible fade show invalid-feedback mt-3"
-                                    id="produto-error" role="alert" style="display: none;">
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-                                    Produto não encontrado!
+                            <!-- Campo Nome Produto -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nome_produto"><strong>Produto</strong></label>
+                                    <input type="text" name="nome_produto" id="nome_produto" class="form-control"
+                                        autocomplete="off">
+                                    <div class="alert alert-warning alert-dismissible fade show invalid-feedback mt-3"
+                                        id="produto-error" role="alert" style="display: none;">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        Produto não encontrado!
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Aqui vai aparecer a tabela com produtos -->
+                            <div id="produto-table-container"
+                                style="display: none; position: absolute; top: 100%; left: 0; max-height: 200px; overflow-y: auto; background: #fff; border: 1px solid #ccc; width: calc(55% - 20px); z-index: 100;">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nome</th>
+                                            <th>Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="produto-list"></tbody>
+                                </table>
+                            </div>
+
+                            <!-- Campo Valor Produto -->
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="estoque"><strong>Valor</strong></label>
+                                    <input type="text" name="estoque_produto" id="estoque_produto"
+                                        class="form-control" readonly>
+                                </div>
+                            </div>
+
+                            <!-- Campo Quantidade -->
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label for="quantidade"><strong>Quantidade</strong></label>
+                                    <input type="text" name="quantidade" id="quantidade" class="form-control">
                                 </div>
                             </div>
                         </div>
-                        <!-- Aqui vai aparecer a tabela com produtos -->
-                        <div id="produto-table-container"
-                            style="display: none; position: absolute; top: 100%; left: 0; max-height: 200px; overflow-y: auto; background: #fff; border: 1px solid #ccc; width: calc(55% - 20px); z-index: 100;">
-                            <table class="table table-hover mb-0">
+                        <!-- Tabela de Itens Inseridos -->
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered" id="itens-inseridos">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Nome</th>
+                                        <th>Cód</th>
+                                        <th>Produto</th>
                                         <th>Valor</th>
+                                        <th>Quantidade</th>
+                                        <th>Valor Total</th>
+                                        <th>Ações</th>
                                     </tr>
                                 </thead>
-                                <tbody id="produto-list"></tbody>
-                            </table>
-                        </div>
-
-                        <!-- Campo Valor Produto -->
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="estoque"><strong>Valor</strong></label>
-                                <input type="text" name="estoque_produto" id="estoque_produto" class="form-control"
-                                    readonly>
-                            </div>
-                        </div>
-
-                        <!-- Campo Quantidade -->
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                <label for="quantidade"><strong>Quantidade</strong></label>
-                                <input type="text" name="quantidade" id="quantidade" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Tabela de Itens Inseridos -->
-                    <div class="table-responsive mt-4">
-                        <table class="table table-bordered" id="itens-inseridos">
-                            <thead>
-                                <tr>
-                                    <th>Cód</th>
-                                    <th>Produto</th>
-                                    <th>Valor</th>
-                                    <th>Quantidade</th>
-                                    <th>Valor Total</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="itens-list">
-                                @foreach (session('itens_pedido', []) as $item)
-                                    <tr data-produto-id="{{ $item->produto_id }}">
-                                        <td>{{ $item->produto->codigo }}</td>
-                                        <td>{{ $item->produto->nome }} <br>
-                                            <!-- Adiciona a observação abaixo do nome do produto -->
-                                            @if ($item->observacao)
+                                <tbody id="itens-list">
+                                    @foreach (session('itens_pedido', []) as $item)
+                                        <tr data-produto-id="{{ $item->produto_id }}">
+                                            <td>{{ $item->produto->codigo }}</td>
+                                            <td>{{ $item->produto->nome }} <br>
+                                             <!-- Adiciona a observação abaixo do nome do produto -->
+                                             @if ($item->observacao)
                                                 <span class="small-text text-muted" title="{{ $item->observacao }}"
                                                     style="font-size: 9px;">
                                                     <strong>{{ $item->observacao }}</strong>
                                                 </span>
                                             @endif
                                         </td>
-                                        <td>{{ $item->produto->estoque }}</td>
-                                        <td>{{ $item->quantidade }}</td>
-                                        <td>{{ $item->valor_total }}</td>
-                                        <td>
-                                            <button class="btn btn-warning btn-sm add-observacao"
-                                                data-id="{{ $item->produto_id }}">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-danger btn-sm delete-item">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <!-- Total de itens -->
-                        <div class="foote-class">
-                            <span class="font-bold">Quant. Itens:<span id="total-quantidade"
-                                    class="font-bold">{{ $pedido->itensPedido->count() }}</span> </span>
-                            <br>
-                            <span class="font-bold">Total dos Itens: R$<span id="total-valores"
-                                    class="font-bold">{{ $pedido->total_pedido }}</span></span>
+                                            <td>{{ $item->produto->estoque }}</td>
+                                            <td>{{ $item->quantidade }}</td>
+                                            <td>{{ $item->valor_total }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-warning btn-sm edit-item">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-danger btn-sm delete-item">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <!-- Total de itens -->
+                            <div class="foote-class">
+                                <span class="font-bold">Quant. Itens:<span id="total-quantidade"
+                                        class="font-bold">{{ $pedido->itensPedido->count() }}</span> </span>
+                                <br>
+                                <span class="font-bold">Total dos Itens: R$<span id="total-valores"
+                                        class="font-bold">{{ $pedido->total_pedido }}</span></span>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                {{-- Finalizar --}}
-                <div class="tab-pane fade" id="bordered-justified-contact" role="tabpanel"
-                    aria-labelledby="contact-tab">
-                    <div class="row mb-3 mt-4">
-                        <div class="col-md-12">
-                            <label for="observacao" class="form-label"><strong>Observação</strong></label>
-                            <textarea class="form-control " id="observacao" name="observacao"value="{{ old('observacao') }}" autocomplete=off>  </textarea>
+                    <div class="tab-pane fade" id="bordered-justified-contact" role="tabpanel"
+                        aria-labelledby="contact-tab">
+                        <div class="row mb-3 mt-4">
+                            <div class="col-md-12">
+                                <label for="observacao" class="form-label"><strong>Observação</strong></label>
+                                <textarea class="form-control" id="observacao" name="observacao" autocomplete="off">{{ old('observacao', $pedido->observacao) }}</textarea>
+                            </div>
                         </div>
-                    </div>
-                </div><!-- End Bordered Tabs Justified -->
+                    </div><!-- End Bordered Tabs Justified -->
 
+                </div>
             </div>
-        </div>
-        {{-- </form> --}}
+        </form>
     </div>
 
 
-    <!-- Modal de Erro -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="errorModalLabel">Erro ao Salvar</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p id="errorMessage"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                </div>
+
+<!-- Modal de Sucesso -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="successModalLabel">Sucesso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="successMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal de Observação -->
-    <div class="modal fade" id="observacaoModal" tabindex="-1" aria-labelledby="observacaoModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="observacaoModalLabel">Adicionar Observação</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <textarea id="observacaoInput" class="form-control" rows="4" placeholder="Digite sua observação aqui..."></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveObservacaoBtn">Salvar Observação</button>
-                </div>
+<!-- Modal de Erro -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">Erro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
+</div>
 
+
+
+<!-- Modal para editar observação -->
+<div class="modal fade" id="observacaoModal" tabindex="-1" aria-labelledby="observacaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="observacaoModalLabel">Editar Observação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <textarea id="observacaoText" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="salvarObservacao">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     {{-- pesquisa pelo codigo do produto --}}
     <script>
@@ -336,7 +347,7 @@
             const rect = nomeprodutoInput.getBoundingClientRect(); // Pega a posição do campo nome_produto
 
             if (termo.length >= 3) {
-                fetch(`{{ route('buscar.produto.nome', '') }}`)
+                fetch("{{ route('buscar.produto.nome') }}?nome=" + encodeURIComponent(termo))
                     .then(response => response.json())
                     .then(data => {
                         produtoList.innerHTML = '';
@@ -427,6 +438,7 @@
         }
     </script>
 
+
     <!-- Script de Adição de Itens -->
     <script>
         // const quantidadeprodutoInput = document.getElementById('quantidade');
@@ -476,31 +488,28 @@
                         }
                     });
 
-                    if (itemExists) {
-                        alert('Este item já foi adicionado.');
-                        return; // Impede a adição do item novamente
-                    }
+                    // Verifica se o item já foi adicionado
+                    // if (itemExists) {
+                    //     alert('Este item já foi adicionado.');
+                    //     return; // Impede a adição do item novamente
+                    // }
 
                     // Se o item não existir, prossegue com a adição à tabela
                     const total = parseFloat(estoque) * parseInt(quantidade);
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                <td>${codigo}</td>
-                <td>${nome}</td>
-                <td>${estoque}</td>
-                <td>${quantidade}</td>
-                <td>${total.toFixed(2)}</td>
-
-                <td>
-                    <button class="btn btn-warning btn-sm add-observacao" data-id="${produtoId}">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-danger btn-sm delete-item">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            `;
+                    <td>${codigo}</td>
+                    <td>${nome}</td>
+                    <td>${estoque}</td>
+                    <td>${quantidade}</td>
+                    <td>${total.toFixed(2)}</td>
+                    <td>
+                         <button type="button" class="btn btn-warning btn-sm edit-item" data-id="${produtoId}">
+            <i class="bi bi-pencil"></i>
+        </button>
+                        <button class="btn btn-danger btn-sm delete-item"><i class="bi bi-trash"></i></button></td>
+                `;
                     tr.setAttribute('data-produto-id', produtoId);
 
                     // Adiciona a nova linha à tabela de itens
@@ -552,6 +561,72 @@
         }
     </script>
 
+    {{-- lógica para abrir o modal e salvar a observação --}}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const itensList = document.getElementById('itens-list'); // Tabela de itens
+        let currentRow = null; // Linha atual sendo editada
+
+        // Função para abrir o modal de edição de observação
+        function openObservacaoModal(row) {
+            const observacao = row.getAttribute('data-observacao') || ''; // Recupera a observação atual
+            document.getElementById('observacaoText').value = observacao; // Preenche o textarea
+            currentRow = row; // Armazena a linha atual
+            const modal = new bootstrap.Modal(document.getElementById('observacaoModal'));
+            modal.show(); // Abre o modal
+        }
+
+        // Adicionar evento de clique ao botão de editar (usando delegação de eventos)
+        itensList.addEventListener('click', function(event) {
+            const editButton = event.target.closest('.edit-item');
+            if (editButton) {
+                const row = editButton.closest('tr'); // Captura a linha correspondente
+                openObservacaoModal(row); // Abre o modal para editar a observação
+            }
+        });
+
+        // Salvar a observação quando o botão de salvar no modal for clicado
+        document.getElementById('salvarObservacao').addEventListener('click', function() {
+            const observacao = document.getElementById('observacaoText').value; // Captura a observação
+            if (currentRow) {
+                const nomeCell = currentRow.querySelector('td:nth-child(2)'); // Célula do nome do produto
+
+                // Verifica se já existe uma observação na célula
+                const existingObservacao = nomeCell.querySelector('.small-text');
+
+                if (observacao) {
+                    // Se já existe uma observação, atualiza o texto
+                    if (existingObservacao) {
+                        existingObservacao.innerHTML = `<strong>${observacao}</strong>`;
+                    } else {
+                        // Se não existe uma observação, adiciona o <br> e a observação
+                        nomeCell.innerHTML += `
+                            <br>
+                            <span class="small-text text-muted" title="${observacao}" style="font-size: 9px;">
+                                <strong>${observacao}</strong>
+                            </span>
+                        `;
+                    }
+                } else {
+                    // Se a observação estiver vazia, remove o <br> e a observação
+                    if (existingObservacao) {
+                        existingObservacao.remove(); // Remove a observação
+                        const brElement = nomeCell.querySelector('br');
+                        if (brElement) {
+                            brElement.remove(); // Remove o <br>
+                        }
+                    }
+                }
+
+                // Atualiza o atributo data-observacao da linha
+                currentRow.setAttribute('data-observacao', observacao);
+                const modal = bootstrap.Modal.getInstance(document.getElementById('observacaoModal'));
+                modal.hide(); // Fecha o modal
+            }
+        });
+    });
+</script>
+
     <!-- Script de Submissão dos Dados para o Backend -->
     <script>
         document.querySelector('.btn-success').addEventListener('click', function(event) {
@@ -576,17 +651,14 @@
                 const estoque = row.children[2].textContent;
                 const quantidade = row.children[3].textContent;
                 const valorTotal = row.children[4].textContent;
-
-                // Pega a observação do span que está no nome do produto
-                const produtoNomeCell = row.querySelector(
-                    'td:nth-child(2)'); // Pega a célula com o nome do produto
-                const observacao = produtoNomeCell.querySelector('.small-text') ?
-                    produtoNomeCell.querySelector('.small-text').textContent.trim() :
+                //const observacao = row.getAttribute('data-observacao') || ''; // Observação
+                const observacao = row.querySelector('span.small-text') ? row.querySelector('span.small-text').textContent : '';  // Ajuste para pegar corretamente a observação.
                     ''; // Pega o texto do span da observação
                 // const valorTotal = row.children[4].textContent
                 // .replace('R$', '')
                 // .replace(/\./g, '')
                 // .replace(',', '.');
+
                 itens.push({
                     produto_id: produtoId,
                     estoque: estoque,
@@ -596,24 +668,24 @@
                 });
             });
 
-
-
             const dataToSend = {
                 fornecedor_id: document.getElementById('codigo')
                     .value, // Pegue o fornecedor_id de algum lugar do seu form
                 total_itens: itens.length,
                 total_pedido: calcularTotalPedido(itens),
-                prazo: document.getElementById('prazo').value,
                 data: document.getElementById('data').value,
                 itens: itens,
                 status: document.getElementById('status').value,
+                observacao: document.getElementById('observacao').value
             };
 
-            // Aqui você precisa pegar o ID do orçamento que você deseja atualizar (exemplo, pedidoId)
+            // Aqui você precisa pegar o ID do pedido que você deseja atualizar (exemplo, pedidoId)
             const pedidoId = document.getElementById('pedido_id')
                 .value; // Supondo que você tenha esse campo no seu form
 
+            // Envia os dados para o backend
             const updateUrl = "{{ route('pedido.atualizar', ':pedidoId') }}".replace(':pedidoId', pedidoId);
+
 
             // Envia os dados para o backend
             fetch(updateUrl, { // Ajuste a URL para a de atualização
@@ -627,78 +699,41 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    const routePedidos = @json(route('pedidos.index'));
                     if (data.success) {
-                        alert('Orçamento atualizado com sucesso!');
-                        window.location.href = '/pedidos'; // Redireciona para a lista de orçamentos
+                        // Exibe a mensagem de sucesso
+                        showSuccessModal('Pedido salvo com sucesso!');
+                        // Redireciona para a página de pedido após um pequeno delay
+                        setTimeout(() => {
+                            window.location.href = routePedidos;
+                        }, 2000); // 2 segundos de delay
                     } else {
-                        showErrorModal('Erro ao atualizar orçamento: ' + data.message);
+                        showErrorModal('Erro ao salvar pedido: ' + data.message);
                     }
                 })
                 .catch(error => {
                     console.error('Erro:', error);
-                    showErrorModal('Erro inesperado ao atualizar orçamento');
+                    showErrorModal('Erro inesperado ao atualizar pedido');
                 });
         });
 
-        // Função para calcular o total do orçamento
+        // Função para calcular o total do pedido
         function calcularTotalPedido(itens) {
             return itens.reduce((total, item) => total + parseFloat(item.valor_total), 0);
         }
-    </script>
 
-    {{-- JavaScript para o botão de observação e salvar --}}
-    <script>
-        let currentItemId = null;
-
-        // Quando o botão de "Adicionar Observação" é clicado
-        document.querySelectorAll('.add-observacao').forEach(button => {
-            button.addEventListener('click', function() {
-                currentItemId = button.getAttribute('data-id'); // Pega o ID do item clicado
-                const observacao = document.querySelector(`#item-${currentItemId}-observacao`)
-                    ?.textContent || ''; // Pega a observação, caso já exista
-                document.getElementById('observacaoInput').value =
-                    observacao; // Preenche o campo com a observação (se houver)
-                new bootstrap.Modal(document.getElementById('observacaoModal')).show(); // Abre o modal
-            });
-        });
-        document.getElementById('saveObservacaoBtn').addEventListener('click', function() {
-            const observacao = document.getElementById('observacaoInput').value.trim();
-
-            if (observacao !== '') {
-
-                // Atualiza a observação abaixo do nome do produto
-                const produtoNome = document.querySelector(
-                    `tr[data-produto-id="${currentItemId}"] td:nth-child(2)`);
-                if (produtoNome) {
-                    let observacaoSpan = produtoNome.querySelector('.small-text');
-                    if (!observacaoSpan) {
-                        // Cria o span se não existir
-                        observacaoSpan = document.createElement('span');
-                        observacaoSpan.classList.add('small-text', 'text-muted');
-                        produtoNome.appendChild(observacaoSpan);
-                    }
-                    observacaoSpan.textContent = observacao; // Atualiza o conteúdo da observação
-                }
-
-
-                // Fechar o modal
-                bootstrap.Modal.getInstance(document.getElementById('observacaoModal')).hide();
+                  // Função para exibir o modal de sucesso
+                  function showSuccessModal(message) {
+                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                document.getElementById('successMessage').textContent = message;
+                successModal.show();
             }
-        });
-    </script>
 
-
-    {{-- Delegação de Eventos para o Botão "Adicionar Observação" --}}
-    <script>
-        document.getElementById('itens-list').addEventListener('click', function(event) {
-            // Verifica se o clique foi em um botão de adicionar observação
-            if (event.target && event.target.classList.contains('add-observacao')) {
-                // Pega o id do produto
-                const produtoId = event.target.getAttribute('data-id');
-
-                // Abre o modal de observação
-                abrirModalObservacao(produtoId);
+            // Função para exibir o modal de erro
+            function showErrorModal(message) {
+                const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                document.getElementById('errorMessage').textContent = message;
+                errorModal.show();
             }
-        });
     </script>
 @endsection

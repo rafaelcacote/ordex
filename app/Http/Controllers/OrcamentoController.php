@@ -30,7 +30,10 @@ class OrcamentoController extends Controller
         }
 
         // Executa a query e obtém os resultados
-        $orcamentos = $query->paginate(10);
+        $orcamentos = $query->select('orcamentos.*') // Garantir que o status e outros campos sejam selecionados
+            ->paginate(10);
+
+        //dd($orcamentos);
 
         // Retorna a view com os orçamentos
         return view('orcamentos.index', compact('orcamentos'));
@@ -167,6 +170,7 @@ class OrcamentoController extends Controller
                 'total_orcamento' => $request->total_orcamento,
                 'prazo' => $request->prazo,
                 'data' => $request->data,
+                'observacao' => $request->observacao,
             ]);
 
 
@@ -179,6 +183,7 @@ class OrcamentoController extends Controller
                     'valor_unitario' => $item['estoque'],
                     'quantidade' => $item['quantidade'],
                     'valor_total' => $item['valor_total'],
+                    'observacao' => $item['observacao'],
 
                 ]);
             }
@@ -218,6 +223,7 @@ class OrcamentoController extends Controller
                 'prazo' => $request->prazo,
                 'data' => $request->data,
                 'status' => $request->status,
+                'observacao' => $request->observacao,
             ]);
 
             // 2. Atualizar os itens na tabela itens_orcamentos
@@ -254,7 +260,6 @@ class OrcamentoController extends Controller
         $orcamento = Orcamento::findOrFail($orcamentoId);
         $fornecedor = Fornecedor::findOrFail($orcamento->fornecedor_id);
         $itens = ItemOrcamento::where('orcamento_id', $orcamentoId)->get();
-
         // Caminho da logo
         $logo = public_path('assets/img/logo_.png'); // Ajuste o caminho conforme necessário \public\assets\img
 

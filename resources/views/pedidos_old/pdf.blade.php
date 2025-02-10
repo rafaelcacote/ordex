@@ -150,9 +150,9 @@
         <div class="header">
             <img src="{{ $logo }}" alt="Logo da Empresa">
             <div class="info">
-                <h1>Cotação</h1>
-                <p>Número: {{ $orcamento->id }}</p>
-                <p>Data: {{ date('d/m/Y', strtotime($orcamento->data)) }}</p>
+                <h1>Pedido</h1>
+                <p>Número: {{ $pedido->id }}</p>
+                <p>Data: {{ date('d/m/Y', strtotime($pedido->data)) }}</p>
             </div>
         </div>
 
@@ -196,25 +196,13 @@
         </div>
 
         <div class="section">
-            <p class="total"><span>Total Itens:</span> {{ $orcamento->total_itens }}</p>
-            <p class="total"><span>Total Orçamento:</span> R$
-                {{ number_format($orcamento->total_pedido, 2, ',', '.') }}
+            <p class="total"><span>Total Itens:</span> {{ $pedido->total_itens }}</p>
+            <p class="total"><span>Total Orçamento:</span> R$ {{ number_format($pedido->total_pedido, 2, ',', '.') }}
             </p>
         </div>
-        <div class="section">
-            <p>
-                @if ($orcamento->observacao)
-                <span style="font-size: 12px;"> <strong>Observação:</strong></span>
-                    <span class="small-text text-muted" style="font-size: 12px;">
-                          {{ $orcamento->observacao }}
-                    </span>
-                @endif
-              </p>
-        </div>
-
 
         <div class="footer">
-            <p>Essa Cotação foi gerado para impressão. Para mais informações, entre em contato.</p>
+            <p>Este orçamento foi gerado para impressão. Para mais informações, entre em contato.</p>
             <p>© 2024 Ordex. Todos os direitos reservados.</p>
         </div>
     </div>

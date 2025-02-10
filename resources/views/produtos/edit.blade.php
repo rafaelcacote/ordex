@@ -86,7 +86,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="estoque"><strong>Estoque</strong></label>
-                    <input type="number" name="estoque" id="estoque" step="0.01" class="form-control" value="{{ old('estoque', $produto->estoque) }}">
+                    <input type="text" name="estoque" id="estoque" class="form-control" value="{{ old('estoque', $produto->estoque) }}">
                 </div>
             </div>
             <div class="col-md-6">

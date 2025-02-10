@@ -24,15 +24,15 @@
 
             <div class="card">
 
-                <form class="row g-3 pesquisa" method="GET" action="{{ route('orcamentos.index') }}">
-                    @csrf
+                <form class="row g-3 pesquisa" method="GET" id="pesquisaForm" action="{{ route('orcamentos.index') }}">
+
                     <div class="col-md-2">
                         <label for="id" class="form-label"><span class="badge bg-dark">Código</span></label>
                         <input type="text" class="form-control" id="id" name="id" value="">
                     </div>
                     <div class="col-md-4">
-                        <label for="for_nome" class="form-label"><span class="badge bg-dark">Nome</span></label>
-                        <input type="text" class="form-control" id="for_nome" name="for_nome" value="">
+                        <label for="nome" class="form-label"><span class="badge bg-dark">Nome</span></label>
+                        <input type="text" class="form-control" id="nome" name="nome" value="">
                     </div>
                     <div class="col-md-4 botao">
                         <button type="submit" class="btn btn-warning">Pesquisar</button>
@@ -45,6 +45,11 @@
 
                 <!-- Table with stripped rows -->
                 <div class="table-responsive">
+                    @if ($orcamentos->isEmpty())
+                    <div class="alert alert-warning" role="alert">
+                        Nenhuma Cotação encontrada.
+                    </div>
+                @else
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
@@ -102,6 +107,7 @@
 
                         </tbody>
                     </table>
+                    @endif
                     <!-- End Table with stripped rows -->
                 </div>
 
@@ -118,6 +124,19 @@
 
         </div>
     </div>
+
+              {{-- Script para ativar submit ao pressionar ENTER na tela de index --}}
+              <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const form = document.getElementById('pesquisaForm');
+                    form.addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault(); // Impede o comportamento padrão do ENTER
+                            form.submit(); // Submete o formulário
+                        }
+                    });
+                });
+            </script>
 
 
     <script>

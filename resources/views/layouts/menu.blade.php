@@ -39,6 +39,13 @@
         <li class="nav-heading">Financeiro</li>
 
         <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ route('contaspagar.index') }}">
+                <i class="bi bi-cash"></i>
+                <span>Contas a Pagar</span>
+            </a>
+        </li><!-- End Contact Page Nav -->
+
+        <li class="nav-item">
             <a class="nav-link collapsed" href="{{ route('orcamentos.index') }}">
                 <i class="bi bi-card-checklist"></i>
                 <span>Cotações</span>

@@ -16,6 +16,7 @@ class Orcamento extends Model
         'fornecedor_id',
         'total_itens',
         'total_orcamento',
+        'observacao',
     ];
 
     // Relacionamento com Fornecedor

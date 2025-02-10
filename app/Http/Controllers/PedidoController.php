@@ -7,6 +7,7 @@ use App\Models\ItemPedido;
 use App\Models\Fornecedor;
 use App\Models\Produto;
 use App\Models\FormaPagamento;
+use App\Models\ContasPagar;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,9 +21,11 @@ class PedidoController extends Controller
         $query = Pedido::query();
 
         // Filtros condicionais
-        if ($request->input('codigo')) {
-            $query->where('id', $request->input('codigo'));
+        // Aplica o filtro de código (id), se fornecido
+        if ($request->has('id') && $request->input('id') != '') {
+            $query->where('pedidos.id', $request->input('id'));
         }
+
 
         // Aplica o filtro de fornecedor (nome), se fornecido
         if ($request->has('nome') && $request->input('nome') != '') {
@@ -43,20 +46,21 @@ class PedidoController extends Controller
     // Exibe o formulário de criação
     public function create()
     {
-        $formaPagamentos = FormaPagamento::all();
+        $formapagamentos = FormaPagamento::all();
         $fornecedores = Fornecedor::all();
-        return view('pedidos.create', compact('fornecedores', 'formaPagamentos'));
+        return view('pedidos.create', compact('fornecedores', 'formapagamentos'));
     }
 
     public function salvarPedido(Request $request)
     {
         // Limpar espaços extras no backend antes de salvar
         $totalItens = trim($request->total_itens);
+
         // Iniciar uma transação para garantir que todas as operações sejam feitas corretamente
         DB::beginTransaction();
 
         try {
-            // 1. Salvar dados na tabela orcamentos (aba Geral e Finalizar)
+            // 1. Salvar dados na tabela pedidos (aba Geral e Finalizar)
             $pedido = Pedido::create([
                 'user_id' => auth()->user()->id,
                 'fornecedor_id' => $request->fornecedor_id,
@@ -69,15 +73,31 @@ class PedidoController extends Controller
                 'observacao' => $request->observacao,
             ]);
 
-            // 2. Salvar itens na tabela itens_orcamentos
+            // 2. Salvar itens na tabela itens_pedidos
             foreach ($request->itens as $item) {
                 ItemPedido::create([
-                    'pedido_id' => $pedido->id, // ID do orçamento que foi salvo
+                    'pedido_id' => $pedido->id, // ID do pedido que foi salvo
                     'produto_id' => $item['produto_id'],
                     'valor_unitario' => $item['estoque'],
                     'quantidade' => $item['quantidade'],
                     'valor_total' => $item['valor_total'],
+                ]);
+            }
 
+            // 3. Salvar dados na tabela contas_pagar
+            $pagamentos = $request->input('pagamentos');
+
+            foreach ($pagamentos as $pagamento) {
+                // Define o status com base no tipo de pagamento
+                $status = ($pagamento['tipo_pagamento'] === 'Dinheiro') ? 'Pago' : 'Pendente';
+
+                ContasPagar::create([
+                    'valor_quitacao' => $pagamento['valor_pago'],
+                    'parcela' => explode(' de ', $pagamento['parcelas'])[0], // Extrai apenas o número da parcela
+                    'vencimento' => $pagamento['vencimento'],
+                    'forma_pagamento_id' => $pagamento['forma_pagamento_id'],
+                    'pedido_id' => $pedido->id,
+                    'status' => $status,
                 ]);
             }
 
@@ -90,7 +110,6 @@ class PedidoController extends Controller
             return response()->json(['success' => false, 'message' => 'Erro ao salvar Pedido: ' . $e->getMessage()]);
         }
     }
-
 
 
     // Exibe o formulário de edição

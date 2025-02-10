@@ -21,7 +21,9 @@ class FornecedorController extends Controller
         }
 
         if ($request->has('cpf_cnpj')) {
-            $query->where('cpf_cnpj', 'like', '%' . $request->input('cpf_cnpj') . '%');
+            // Remover formatação do CPF/CNPJ antes de realizar a busca
+            $cpfCnpj = preg_replace('/\D/', '', $request->input('cpf_cnpj')); // Remove tudo que não for número
+            $query->where('cpf_cnpj', 'like', '%' . $cpfCnpj . '%');
         }
 
         $fornecedores = $query->paginate(5);
@@ -49,6 +51,16 @@ class FornecedorController extends Controller
 
         ]);
 
+        // Verifica se o CPF ou CNPJ já existe
+        $cpfExistente = Fornecedor::where('cpf_cnpj', $request->cpf_cnpj)->exists();
+
+        if ($cpfExistente) {
+            return redirect()->back()
+                ->withErrors(['cpf_cnpj' => 'Este CPF ou CNPJ já está cadastrado no sistema.'])
+                ->withInput();
+        }
+
+
         Fornecedor::create([
             'tipo' => $request->tipo,
             'cpf_cnpj' => $request->cpf_cnpj,
@@ -72,16 +84,26 @@ class FornecedorController extends Controller
 
     // Mostrar o formulário de edição
     public function edit($id)
+
     {
+
         $fornecedor = Fornecedor::findOrFail($id);
-        $estados = Estado::all();
-        $cidades = Cidade::all();
+        $estados = Estado::all(); // Carrega todos os estados
+        $cidades = Cidade::where('estado_id', $fornecedor->cidade->estado_id)->get(); // Carrega as cidades do estado do fornecedor
         return view('fornecedores.edit', compact('fornecedor', 'estados', 'cidades'));
     }
 
     // Atualizar fornecedor
     public function update(UpdateFornecedorRequest $request, $id)
     {
+
+        // Remove caracteres não numéricos do campo cpf_cnpj
+        $request->merge([
+            'cpf_cnpj' => preg_replace('/\D/', '', $request->cpf_cnpj),
+            'telefone1' => preg_replace('/\D/', '', $request->telefone1),
+            'telefone2' => preg_replace('/\D/', '', $request->telefone2),
+
+        ]);
 
         $fornecedor = Fornecedor::findOrFail($id);
         $fornecedor->update($request->all());

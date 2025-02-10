@@ -65,6 +65,7 @@
             @endif
 
             @yield('content')
+            @yield('js')
         </section>
 
     </main><!-- End #main -->
@@ -151,6 +152,8 @@
     <script>
         $(document).ready(function() {
 
+
+
             // Máscara para CPF
             $('#cpf').inputmask('999.999.999-99');
 
@@ -162,6 +165,11 @@
                 mask: ["(99) 9999-9999", "(99) 99999-9999", ],
                 keepStatic: true
             });
+
+
+            $(".moeda").inputmask("decimal",{digits: 2, numericInput: true});
+
+
 
         });
     </script>

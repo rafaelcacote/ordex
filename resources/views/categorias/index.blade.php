@@ -24,7 +24,7 @@
 
             <div class="card">
 
-                <form class="row g-3 pesquisa" method="GET" action="{{ route('categorias.index') }}">
+                <form class="row g-3 pesquisa" method="GET" id="pesquisaForm" action="{{ route('categorias.index') }}">
                     @csrf
                     <div class="col-md-4">
                         <label for="for_nome" class="form-label"><span class="badge bg-dark">Nome</span></label>
@@ -41,6 +41,11 @@
 
                 <!-- Table with stripped rows -->
                 <div class="table-responsive">
+                    @if ($categorias->isEmpty())
+                        <div class="alert alert-warning" role="alert">
+                            Nenhuma categoria encontrada.
+                        </div>
+                    @else
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
@@ -77,6 +82,7 @@
 
                         </tbody>
                     </table>
+                    @endif
                     <!-- End Table with stripped rows -->
                 </div>
 
@@ -93,4 +99,17 @@
 
         </div>
     </div>
+
+        {{-- Script para ativar submit ao pressionar ENTER na tela de index --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('pesquisaForm');
+                form.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); // Impede o comportamento padrão do ENTER
+                        form.submit(); // Submete o formulário
+                    }
+                });
+            });
+        </script>
 @endsection
